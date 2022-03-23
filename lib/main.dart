@@ -51,24 +51,6 @@ class MyGame extends FlameGame
       ..sprite = await loadSprite('overworld_sky.png')
       ..size = size);
 
-    //! Player
-    /* hero
-      ..sprite = await loadSprite('hero_right.png')
-      ..size = Vector2(heroWidth, heroHeight)
-      ..x = size[0] / 2 - 150
-      ..y = size[1] - 400 - heroHeight;
-    add(hero); */
-    final playerImage = await images.load('hero_right_small.png');
-    _player = Player(
-      playerImage,
-      anchor: Anchor.center,
-      levelBounds: _levelBounds,
-      position: Vector2(screenWidth / 2, 200),
-      size: Vector2(playerWidth, playerHeight),
-    );
-    add(_player);
-    print('has loaded player');
-
     //! Mushroom
     mushroom
       ..sprite = await loadSprite('gigant_mushroom.png')
@@ -79,19 +61,31 @@ class MyGame extends FlameGame
     add(mushroom);
 
     //! Mushroom platform hitbox
-    final platform = Platform(
+    final platform = MyHitbox(
+      type: 'platform',
       anchor: Anchor.bottomCenter,
-      size: Vector2(300, 390),
+      size: Vector2(340, 390),
       position: Vector2(screenWidth / 2, screenHeight),
     );
     add(platform);
-
+    //! Player
+    final playerImage = await images.load('hero_right_small.png');
+    _player = Player(
+      playerImage,
+      anchor: Anchor.bottomCenter,
+      levelBounds: _levelBounds,
+      position: Vector2(screenWidth / 2, 200),
+      size: Vector2(playerWidth, playerHeight),
+    );
+    add(_player);
+    print('has loaded player');
     //! Bounce
     bounce
+      ..anchor = Anchor.topLeft
       ..sprite = await loadSprite('bounce.png')
       ..size = Vector2(300, 200)
-      ..y = size[1] - 400 - playerHeight
-      ..x = size[0];
+      ..x = screenWidth + 400
+      ..y = screenHeight - 600;
     add(bounce);
   }
 
@@ -102,6 +96,13 @@ class MyGame extends FlameGame
     if (bounce.x < 0 - 400) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
       bounce.x = size[0];
+    }
+    // Check if bounce is collid ing with hero
+    if (bounce.x < _player.x &&
+        bounce.x + 300 > _player.x &&
+        bounce.y + 20 < _player.y) {
+      //double diff = _player.x - bounce.x;
+      _player.x -= (bounceSpeed * dt) / 1.5;
     }
   }
 }
