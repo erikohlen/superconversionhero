@@ -83,9 +83,9 @@ class MyGame extends FlameGame
     bounce
       ..anchor = Anchor.topLeft
       ..sprite = await loadSprite('bounce.png')
-      ..size = Vector2(300, 200)
+      ..size = Vector2(300, 160)
       ..x = screenWidth + 400
-      ..y = screenHeight - 600;
+      ..y = screenHeight - 560;
     add(bounce);
   }
 
@@ -102,7 +102,7 @@ class MyGame extends FlameGame
         bounce.x + 300 > _player.x &&
         bounce.y + 20 < _player.y) {
       //double diff = _player.x - bounce.x;
-      _player.x -= (bounceSpeed * dt) / 1.5;
+      _player.x -= (bounceSpeed * dt) / 1;
     }
   }
 }
