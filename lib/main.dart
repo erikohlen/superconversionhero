@@ -8,13 +8,9 @@ import 'package:flutter/foundation.dart';
 
 import 'actors/platform.dart';
 import 'actors/player.dart';
+import 'constants.dart';
 
-final style = const TextStyle(
-    color: Colors.white, fontSize: 20, fontFamily: 'MarioRegular');
-final regular = TextPaint(style: style);
-final biggerText = TextPaint(style: style.copyWith(fontSize: 32));
 void main() {
-  print('load the game widgets');
   runApp(Focus(
       onKey: (FocusNode node, RawKeyEvent event) => KeyEventResult.handled,
       child: GameWidget(game: MyGame())));
@@ -38,8 +34,6 @@ class MyGame extends FlameGame
   bool hasSucceded = false;
   int bounceRate = 100;
   bool hasPassedPlayer = false;
-
-  // Text Style
 
   final bounceRateText =
       TextComponent(text: 'Bounce rate: 100%', textRenderer: regular);
@@ -93,7 +87,7 @@ class MyGame extends FlameGame
       size: Vector2(playerWidth, playerHeight),
     );
     add(_player);
-    print('has loaded player');
+
     //! Bounce
     bounce
       ..anchor = Anchor.topLeft
@@ -148,10 +142,9 @@ class MyGame extends FlameGame
   }
 
   void handleDeath() async {
-    print('You died!');
     isDead = true;
     Future.delayed(
-      Duration(
+      const Duration(
         milliseconds: 1000,
       ),
       () {
@@ -162,20 +155,17 @@ class MyGame extends FlameGame
       },
     );
     Future.delayed(
-      Duration(
+      const Duration(
         milliseconds: 3000,
       ),
-      () {
-        print('Go to Game Over Screen');
-      },
+      () {},
     );
   }
 
   void handleSuccess() async {
-    print('You stayed on site!');
     hasSucceded = true;
     Future.delayed(
-      Duration(
+      const Duration(
         milliseconds: 1000,
       ),
       () {
@@ -187,12 +177,10 @@ class MyGame extends FlameGame
       },
     );
     Future.delayed(
-      Duration(
+      const Duration(
         milliseconds: 3000,
       ),
-      () {
-        print('Go to Next screen');
-      },
+      () {},
     );
   }
 }
