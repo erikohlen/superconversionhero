@@ -9,6 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'actors/platform.dart';
 import 'actors/player.dart';
 
+final style = const TextStyle(
+    color: Colors.white, fontSize: 20, fontFamily: 'MarioRegular');
+final regular = TextPaint(style: style);
+final biggerText = TextPaint(style: style.copyWith(fontSize: 32));
 void main() {
   print('load the game widgets');
   runApp(Focus(
@@ -18,6 +22,8 @@ void main() {
 
 class MyGame extends FlameGame
     with HasCollidables, HasKeyboardHandlerComponents {
+  final double screenWidth = 1080;
+  final double screenHeight = 900;
   SpriteComponent background = SpriteComponent();
   late Player _player;
   late Image spriteSheet;
@@ -28,14 +34,19 @@ class MyGame extends FlameGame
   final double playerWidth = 140;
   final double playerHeight = 140;
   int bounceSpeed = 500;
+  bool isDead = false;
+  // Text Style
+
+  final bounceRateText =
+      TextComponent(text: 'Current bounce rate: 100%', textRenderer: regular);
+  final youDiedText =
+      TextComponent(text: 'You bounced!', textRenderer: biggerText);
 
   //! ON LOAD
   @override
   Future<void> onLoad() async {
     super.onLoad();
     //! Viewport
-    final double screenWidth = 1080;
-    final double screenHeight = 900;
 
     camera.viewport = FixedResolutionViewport(
       Vector2(screenWidth, screenHeight),
@@ -87,13 +98,21 @@ class MyGame extends FlameGame
       ..x = screenWidth + 400
       ..y = screenHeight - 560;
     add(bounce);
+
+    //! Text components
+    bounceRateText
+      ..anchor = Anchor.topCenter
+      ..x = screenWidth / 2 // size is a property from game
+      ..y = 40.0;
+    add(bounceRateText);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+
     bounce.x -= bounceSpeed * dt;
-    if (bounce.x < 0 - 400) {
+    if (bounce.x < 0 - 400 && isDead == false) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
       bounce.x = size[0];
     }
@@ -104,30 +123,34 @@ class MyGame extends FlameGame
       //double diff = _player.x - bounce.x;
       _player.x -= (bounceSpeed * dt) / 1;
     }
+
+    if (_player.y > size[1] && isDead == false) {
+      handleDeath();
+    }
+    if (isDead == true) {}
   }
-}
 
-/* 
-// A single instance to avoid creation of
-// multiple instances in every build.
-final _game = SimplePlatformer();
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+  void handleDeath() async {
+    print('You died!');
+    isDead = true;
+    Future.delayed(
+      Duration(
+        milliseconds: 1000,
       ),
-      home: Scaffold(
-        body: GameWidget(
-          game: kDebugMode ? SimplePlatformer() : _game,
-        ),
+      () {
+        add(youDiedText);
+        youDiedText.anchor = Anchor.topCenter;
+        youDiedText.x = screenWidth / 2;
+        youDiedText.y = 300;
+      },
+    );
+    Future.delayed(
+      Duration(
+        milliseconds: 3000,
       ),
+      () {
+        print('Go to Game Over Screen');
+      },
     );
   }
 }
- */
