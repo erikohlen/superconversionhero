@@ -2,99 +2,105 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+
+import 'actors/platform.dart';
+import 'actors/player.dart';
 
 void main() {
   print('load the game widgets');
   runApp(GameWidget(game: MyGame()));
 }
 
-class MyGame extends FlameGame {
+class MyGame extends FlameGame
+    with HasCollidables, HasKeyboardHandlerComponents {
   SpriteComponent background = SpriteComponent();
+  late Player _player;
+  late Image spriteSheet;
+  late Rect _levelBounds;
   SpriteComponent hero = SpriteComponent();
-  SpriteComponent platform = SpriteComponent();
+  SpriteComponent mushroom = SpriteComponent();
   SpriteComponent bounce = SpriteComponent();
-  final double heroWidth = 140;
-  final double heroHeight = 120;
+  final double playerWidth = 140;
+  final double playerHeight = 140;
   int bounceSpeed = 500;
+
+  //! ON LOAD
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    camera.viewport = FixedResolutionViewport(
-      Vector2(800, 600),
-    );
-    final screenWidth = size[0];
-    final screenHeight = size[1];
+    //! Viewport
+    final double screenWidth = 1080;
+    final double screenHeight = 900;
 
+    camera.viewport = FixedResolutionViewport(
+      Vector2(screenWidth, screenHeight),
+    );
+    _levelBounds = Rect.fromLTWH(
+      0,
+      0,
+      screenWidth,
+      screenHeight,
+    );
+    //! Background
     add(background
-      ..sprite = await loadSprite('overworld_bg.png')
+      ..sprite = await loadSprite('overworld_sky.png')
       ..size = size);
-    hero
+
+    //! Ground platform
+    final platform = Platform(
+      position: Vector2(0, 200),
+      size: Vector2(screenWidth, 300),
+    );
+    add(platform);
+    //! Player
+    /* hero
       ..sprite = await loadSprite('hero_right.png')
       ..size = Vector2(heroWidth, heroHeight)
       ..x = size[0] / 2 - 150
       ..y = size[1] - 400 - heroHeight;
-    add(hero);
-    platform
+    add(hero); */
+    final playerImage = await images.load('hero_right_small.png');
+    _player = Player(
+      playerImage,
+      anchor: Anchor.center,
+      levelBounds: _levelBounds,
+      position: Vector2(200, 200),
+      size: Vector2(playerWidth, playerHeight),
+    );
+    add(_player);
+    print('has loaded player');
+
+    //! Mushroom
+    /*  mushroom
       ..sprite = await loadSprite('gigant_mushroom.png')
       ..size = Vector2(300, 400)
       ..anchor = Anchor.bottomCenter
       ..x = size[0] / 2
       ..y = size[1];
+    add(mushroom); */
 
-    add(platform);
-    bounce
+    //! Bounce
+    /*  bounce
       ..sprite = await loadSprite('bounce.png')
       ..size = Vector2(300, 200)
-      ..y = size[1] - 400 - heroHeight
+      ..y = size[1] - 400 - playerHeight
       ..x = size[0];
-    add(bounce);
+    add(bounce); */
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    bounce.x -= bounceSpeed * dt;
-    if (bounce.x < 0 - 400) {
+    //bounce.x -= bounceSpeed * dt;
+    /*   if (bounce.x < 0 - 400) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
       bounce.x = size[0];
-    }
+    } */
   }
 }
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* 
 // A single instance to avoid creation of
