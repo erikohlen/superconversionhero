@@ -35,11 +35,15 @@ class MyGame extends FlameGame
   final double playerHeight = 140;
   int bounceSpeed = 500;
   bool isDead = false;
+  bool hasSucceded = false;
+  int bounceRate = 100;
+  bool hasPassedPlayer = false;
+
   // Text Style
 
   final bounceRateText =
-      TextComponent(text: 'Current bounce rate: 100%', textRenderer: regular);
-  final youDiedText =
+      TextComponent(text: 'Bounce rate: 100%', textRenderer: regular);
+  final resultText =
       TextComponent(text: 'You bounced!', textRenderer: biggerText);
 
   //! ON LOAD
@@ -112,11 +116,24 @@ class MyGame extends FlameGame
     super.update(dt);
 
     bounce.x -= bounceSpeed * dt;
-    if (bounce.x < 0 - 400 && isDead == false) {
+    // Check when bounce has passed left side of screen
+    if (bounce.x < 0 - 400 && isDead == false && hasSucceded == false) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
       bounce.x = size[0];
+      hasPassedPlayer = false;
     }
-    // Check if bounce is collid ing with hero
+    // Check when bounce has passed player, update bounce rate
+    if (bounce.x - 100 < _player.x &&
+        isDead == false &&
+        hasPassedPlayer == false) {
+      bounceRate -= 10;
+      bounceRateText.text = 'Bounce rate: $bounceRate %';
+      hasPassedPlayer = true;
+      if (bounceRate <= 0) {
+        handleSuccess();
+      }
+    }
+    // Check if bounce is colliding with hero
     if (bounce.x < _player.x &&
         bounce.x + 300 > _player.x &&
         bounce.y + 20 < _player.y) {
@@ -138,10 +155,10 @@ class MyGame extends FlameGame
         milliseconds: 1000,
       ),
       () {
-        add(youDiedText);
-        youDiedText.anchor = Anchor.topCenter;
-        youDiedText.x = screenWidth / 2;
-        youDiedText.y = 300;
+        add(resultText);
+        resultText.anchor = Anchor.topCenter;
+        resultText.x = screenWidth / 2;
+        resultText.y = 300;
       },
     );
     Future.delayed(
@@ -150,6 +167,31 @@ class MyGame extends FlameGame
       ),
       () {
         print('Go to Game Over Screen');
+      },
+    );
+  }
+
+  void handleSuccess() async {
+    print('You stayed on site!');
+    hasSucceded = true;
+    Future.delayed(
+      Duration(
+        milliseconds: 1000,
+      ),
+      () {
+        add(resultText);
+        resultText.text = 'You stayed on site!';
+        resultText.anchor = Anchor.topCenter;
+        resultText.x = screenWidth / 2;
+        resultText.y = 300;
+      },
+    );
+    Future.delayed(
+      Duration(
+        milliseconds: 3000,
+      ),
+      () {
+        print('Go to Next screen');
       },
     );
   }
