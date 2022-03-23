@@ -11,7 +11,9 @@ import 'actors/player.dart';
 
 void main() {
   print('load the game widgets');
-  runApp(GameWidget(game: MyGame()));
+  runApp(Focus(
+      onKey: (FocusNode node, RawKeyEvent event) => KeyEventResult.handled,
+      child: GameWidget(game: MyGame())));
 }
 
 class MyGame extends FlameGame
@@ -42,19 +44,13 @@ class MyGame extends FlameGame
       0,
       0,
       screenWidth,
-      screenHeight,
+      screenHeight + 200,
     );
     //! Background
     add(background
       ..sprite = await loadSprite('overworld_sky.png')
       ..size = size);
 
-    //! Ground platform
-    final platform = Platform(
-      position: Vector2(0, 200),
-      size: Vector2(screenWidth, 300),
-    );
-    add(platform);
     //! Player
     /* hero
       ..sprite = await loadSprite('hero_right.png')
@@ -67,38 +63,46 @@ class MyGame extends FlameGame
       playerImage,
       anchor: Anchor.center,
       levelBounds: _levelBounds,
-      position: Vector2(200, 200),
+      position: Vector2(screenWidth / 2, 200),
       size: Vector2(playerWidth, playerHeight),
     );
     add(_player);
     print('has loaded player');
 
     //! Mushroom
-    /*  mushroom
+    mushroom
       ..sprite = await loadSprite('gigant_mushroom.png')
-      ..size = Vector2(300, 400)
       ..anchor = Anchor.bottomCenter
-      ..x = size[0] / 2
-      ..y = size[1];
-    add(mushroom); */
+      ..size = Vector2(300, 400)
+      ..x = screenWidth / 2
+      ..y = screenHeight;
+    add(mushroom);
+
+    //! Mushroom platform hitbox
+    final platform = Platform(
+      anchor: Anchor.bottomCenter,
+      size: Vector2(300, 390),
+      position: Vector2(screenWidth / 2, screenHeight),
+    );
+    add(platform);
 
     //! Bounce
-    /*  bounce
+    bounce
       ..sprite = await loadSprite('bounce.png')
       ..size = Vector2(300, 200)
       ..y = size[1] - 400 - playerHeight
       ..x = size[0];
-    add(bounce); */
+    add(bounce);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    //bounce.x -= bounceSpeed * dt;
-    /*   if (bounce.x < 0 - 400) {
+    bounce.x -= bounceSpeed * dt;
+    if (bounce.x < 0 - 400) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
       bounce.x = size[0];
-    } */
+    }
   }
 }
 

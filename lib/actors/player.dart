@@ -13,8 +13,9 @@ class Player extends SpriteComponent
   bool _jumpInput = false;
   bool _isOnGround = false;
 
-  final double _gravity = 10;
-  final double _jumpSpeed = 320;
+  final double _gravity = 30;
+  final double _jumpSpeed = 800;
+  final double _fallDown = 1000;
   final double _moveSpeed = 200;
 
   final Vector2 _up = Vector2(0, -1);
@@ -77,7 +78,7 @@ class Player extends SpriteComponent
 
     // Clamp velocity along y to avoid player tunneling
     // through platforms at very high velocities.
-    _velocity.y = _velocity.y.clamp(-_jumpSpeed, 150);
+    _velocity.y = _velocity.y.clamp(-_jumpSpeed, _fallDown /* default: 150 */);
 
     // delta movement = velocity * time
     position += _velocity * dt;
