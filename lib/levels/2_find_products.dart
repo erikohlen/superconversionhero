@@ -18,10 +18,13 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
 
   late Rect _levelBounds;
   late SpriteComponent _background;
-  final Function onSucceed;
   final Function onDeath;
+  final Function onSucceed;
 
-  FindProducts({required this.onSucceed, required this.onDeath}) : super();
+  FindProducts({
+    required this.onDeath,
+    required this.onSucceed,
+  }) : super();
 
   // Level config
   final double playerWidth = 140;
@@ -33,14 +36,14 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
 
   // Level specific state
   bool timeToLoadProduct = true;
-  int _productsViewed = 0;
+  double _attentionSpan = 100;
   int _relevantViewed = 0;
 
   // Level components
   final viewedProductsText =
-      TextComponent(text: 'Viewed products: 0', textRenderer: kRegular);
+      TextComponent(text: 'Attention span left: 100%', textRenderer: kRegular);
   final relevantProductsText =
-      TextComponent(text: 'Relevant products: 0', textRenderer: kRegular);
+      TextComponent(text: 'Relevant products found: 0', textRenderer: kRegular);
   final diedText = TextComponent(
       text: 'You got choice paralysis!', textRenderer: kBiggerText);
   final succeedText =
@@ -89,13 +92,18 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
-      incrementProductsViewed: () {
-        _productsViewed += 1;
-        viewedProductsText.text = 'Viewed products: $_productsViewed';
+      decrementAttentionSpan: () {
+        if (_attentionSpan > 0) {
+          _attentionSpan -= 1;
+          viewedProductsText.text =
+              'Attention span left: ${_attentionSpan.toStringAsFixed(0)}%';
+        } else {
+          viewedProductsText.text = 'Attention span left: 0%';
+        }
       },
       incrementRelevantViewed: () {
         _relevantViewed += 1;
-        relevantProductsText.text = 'Relevant products: $_relevantViewed';
+        relevantProductsText.text = 'Relevant products found: $_relevantViewed';
       },
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
@@ -126,7 +134,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
   @override
   void update(double dt) {
     //! Spawn new product pages
-    if (timeToLoadProduct == true) {
+    if (timeToLoadProduct == true && !isDead && !hasSucceded) {
       timeToLoadProduct = false;
       final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
       //TODO: Implement real product info
@@ -151,6 +159,16 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       });
     }
 
+    //! Check if attention span has reached 0
+    if (_attentionSpan <= 0 && !isDead && !hasSucceded) {
+      if (_relevantViewed == 0) {
+        handleDeath();
+      }
+      if (_relevantViewed > 0) {
+        handleSuccess();
+      }
+    }
+
     super.update(dt);
   }
 
@@ -159,7 +177,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     isDead = true;
     Future.delayed(
       const Duration(
-        milliseconds: 1000,
+        milliseconds: 3000,
       ),
       () {
         add(diedText);
@@ -167,14 +185,15 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
         diedText.anchor = Anchor.topCenter;
         diedText.x = kScreenWidth / 2;
         diedText.y = 300;
-      },
-    );
-    Future.delayed(
-      const Duration(
-        milliseconds: 3000,
-      ),
-      () {
-        onDeath();
+
+        Future.delayed(
+          const Duration(
+            milliseconds: 5000,
+          ),
+          () {
+            onDeath();
+          },
+        );
       },
     );
   }
@@ -184,21 +203,21 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     hasSucceded = true;
     Future.delayed(
       const Duration(
-        milliseconds: 1000,
+        milliseconds: 3000,
       ),
       () {
         add(succeedText);
         succeedText.anchor = Anchor.topCenter;
         succeedText.x = kScreenWidth / 2;
         succeedText.y = 300;
-      },
-    );
-    Future.delayed(
-      const Duration(
-        milliseconds: 3000,
-      ),
-      () {
-        onSucceed();
+        Future.delayed(
+          const Duration(
+            milliseconds: 5000,
+          ),
+          () {
+            onSucceed();
+          },
+        );
       },
     );
   }

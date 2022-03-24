@@ -11,13 +11,13 @@ import '../actors/player.dart';
 
 class LevelTitleScreen extends Component
     with HasGameRef<LevelsGame>, KeyboardHandler {
-  final Function handleNextScreen;
+  final Function next;
   late Player _player;
   late Rect _levelBounds;
   late SpriteComponent _background;
   late SpriteComponent _superConversionHero;
 
-  LevelTitleScreen({required this.handleNextScreen}) : super();
+  LevelTitleScreen({required this.next}) : super();
 
   @override
   Future<void>? onLoad() async {
@@ -69,7 +69,7 @@ class LevelTitleScreen extends Component
     print('Key pressed!');
     if (keysPressed.contains(LogicalKeyboardKey.space)) {
       //TODO: Go to level 1 stay on site
-      handleNextScreen();
+      next();
     }
 
     return true;

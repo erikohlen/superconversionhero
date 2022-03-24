@@ -47,44 +47,50 @@ class LevelsGame extends FlameGame
     product = await images.load('product.png');
 
     // Load first level
+
+    void _loadLevels() {
+      loadLevel(LevelTitleScreen(
+        next: () {
+          loadLevel(LevelBlackIntro(
+            levelNumber: 1,
+            levelName: 'STAY ON SITE',
+            next: () {
+              loadLevel(StayOnSite(
+                onDeath: _loadLevels,
+                onSucceed: () {
+                  loadLevel(LevelBlackIntro(
+                    levelNumber: 2,
+                    levelName: 'FIND PRODUCTS',
+                    next: () {
+                      loadLevel(FindProducts(
+                        onDeath: _loadLevels,
+                        onSucceed: () {
+                          loadLevel(LevelBlackIntro(
+                              levelNumber: 3,
+                              levelName: 'ADD TO CART',
+                              next: () {}));
+                        },
+                      ));
+                    },
+                  ));
+                },
+              ));
+            },
+          ));
+        },
+      ));
+    }
+    //_loadLevels();
+
     loadLevel(
       FindProducts(
-        onSucceed: () {},
-        onDeath: () {},
+        onDeath: _loadLevels,
+        onSucceed: () {
+          loadLevel(LevelBlackIntro(
+              levelNumber: 3, levelName: 'ADD TO CART', next: () {}));
+        },
       ),
     );
-
-    /*  void _loadLevels() {
-      loadLevel(
-        LevelTitleScreen(handleNextScreen: () {
-          loadLevel(
-            LevelBlackIntro(
-              levelNumber: 1,
-              levelName: 'STAY ON SITE',
-              handleNextScreen: () {
-                loadLevel(
-                  StayOnSite(
-                    onDeath: () {
-                      _loadLevels();
-                    },
-                    onSucceed: () {
-                      loadLevel(
-                        LevelBlackIntro(
-                          levelNumber: 2,
-                          levelName: 'FIND PRODUCTS',
-                          handleNextScreen: () {},
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          );
-        }),
-      );
-       _loadLevels();
-    } */
 
     return super.onLoad();
   }

@@ -11,7 +11,7 @@ import '../actors/player.dart';
 class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
   final int levelNumber;
   final String levelName;
-  final Function handleNextScreen;
+  final Function next;
   late Rect _levelBounds;
   late SpriteComponent _background;
   late SpriteComponent _superConversionHero;
@@ -19,7 +19,7 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
   LevelBlackIntro({
     required this.levelNumber,
     required this.levelName,
-    required this.handleNextScreen,
+    required this.next,
   }) : super();
 
   @override
@@ -37,7 +37,7 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
         Duration(
           seconds: 3,
         ), () {
-      handleNextScreen();
+      next();
     });
 
     return super.onLoad();

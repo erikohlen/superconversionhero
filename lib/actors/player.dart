@@ -27,13 +27,13 @@ class Player extends SpriteComponent
   late Vector2 _maxClamp;
 
   // Callbacks to levels
-  final Function incrementProductsViewed;
+  final Function decrementAttentionSpan;
   final Function incrementRelevantViewed;
 
   Player(
     Image image, {
     required Rect levelBounds,
-    required this.incrementProductsViewed,
+    required this.decrementAttentionSpan,
     required this.incrementRelevantViewed,
     Vector2? position,
     Vector2? size,
@@ -140,9 +140,9 @@ class Player extends SpriteComponent
     }
     if (other is ProductPage) {
       print('Collided with product page');
+      decrementAttentionSpan();
       if (other.hasBeenViewed == false) {
         //TODO: Add to viewed counter
-        incrementProductsViewed();
 
         //TODO: Add to
         if (other.isRelevantProduct == true) {
