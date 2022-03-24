@@ -50,7 +50,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
       text: 'You added 0 products to cart!', textRenderer: kBiggerText);
   final succeedText = TextComponent(
       text: 'You added products to cart!', textRenderer: kBiggerText);
-
+  late SpriteComponent _basket;
   @override
   Future<void>? onLoad() async {
     _levelBounds = const Rect.fromLTWH(
@@ -66,9 +66,25 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
   // This method takes care of spawning
   // all the actors in the game world.
   void _spawnActors() {
+    //! Background
     _background = Background(gameRef.overworldSky);
     _background.size = Vector2(kScreenWidth, kScreenHeight);
     add(_background);
+    //! Basket
+    _basket = SpriteComponent(
+      sprite: Sprite(
+        gameRef.basket,
+      ),
+      anchor: Anchor.center,
+      position: Vector2(kScreenWidth - 150, 200),
+    );
+    add(_basket);
+    //! Added to cart text
+    addedToCartText
+      ..anchor = Anchor.topCenter
+      ..x = kScreenWidth / 2 // size is a property from game
+      ..y = 40.0;
+    add(addedToCartText);
 
     //! Ground
     add(SpriteComponent(
@@ -123,14 +139,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
     );
     add(_playerHitbox);
 
-    //! Added to cart text
-    addedToCartText
-      ..anchor = Anchor.topCenter
-      ..x = kScreenWidth / 2 // size is a property from game
-      ..y = 40.0;
-    add(addedToCartText);
-
-    //! Products to throw behind player
+    //! Spawn products to throw behind player
     int _productsAdded = 0;
     for (int _productId in productIds) {
       Image _productImage;
@@ -182,7 +191,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
       _productsSpawned += 1;
     }
 
-    // Remove last product from pile
+    //! THROWING LOGIC
+    //TODO: Wrap in function
     Future.delayed(Duration(milliseconds: productsToThrow.length * 500 + 1000),
         () {
       // Hide from stack

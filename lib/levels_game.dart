@@ -40,6 +40,7 @@ class LevelsGame extends FlameGame
   late Image product12;
   late Image product13;
   late Image product14;
+  late Image basket;
 
   @override
   Future<void>? onLoad() async {
@@ -72,6 +73,7 @@ class LevelsGame extends FlameGame
     product12 = await images.load('product12.png');
     product13 = await images.load('product13.png');
     product14 = await images.load('product14.png');
+    basket = await images.load('basket1.png');
 
     // Game state
     List<int> _productIdsCart = [1, 2];
