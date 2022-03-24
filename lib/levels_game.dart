@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
+import 'package:superconversionhero/levels/3_add_to_cart.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
 import 'package:superconversionhero/levels/1_stay_on_site.dart';
 
@@ -72,8 +73,10 @@ class LevelsGame extends FlameGame
     product13 = await images.load('product13.png');
     product14 = await images.load('product14.png');
 
-    // Load first level
+    // Game state
+    List<int> _productIdsCart = [1, 2, 3, 4];
 
+    // Load first level
     void _loadLevels() {
       loadLevel(LevelTitleScreen(
         next: () {
@@ -106,17 +109,17 @@ class LevelsGame extends FlameGame
         },
       ));
     }
-    //_loadLevels();
 
-    loadLevel(
-      FindProducts(
+    // _loadLevels();
+
+    loadLevel(AddToCart(
+        productIds: _productIdsCart,
         onDeath: _loadLevels,
         onSucceed: () {
+          print('Succeeded');
           loadLevel(LevelBlackIntro(
-              levelNumber: 3, levelName: 'ADD TO CART', next: () {}));
-        },
-      ),
-    );
+              levelNumber: 4, levelName: 'BEGIN CHECKOUT', next: () {}));
+        }));
 
     return super.onLoad();
   }

@@ -13,17 +13,19 @@ import '../actors/platform.dart';
 import '../actors/player.dart';
 import '../actors/product_page.dart';
 
-class FindProducts extends Component with HasGameRef<LevelsGame> {
+class AddToCart extends Component with HasGameRef<LevelsGame> {
   late Player _player;
 
   late Rect _levelBounds;
   late SpriteComponent _background;
   final Function onDeath;
   final Function onSucceed;
+  final List<int> productIds;
 
-  FindProducts({
+  AddToCart({
     required this.onDeath,
     required this.onSucceed,
+    required this.productIds,
   }) : super();
 
   // Level config
@@ -35,28 +37,26 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
   bool hasSucceded = false;
 
   // Level specific state
-  bool timeToLoadProduct = true;
-  double _attentionSpan = 100;
-  int _relevantFound = 0;
-  List<int> _relevantFoundIds = [];
+  List<ProductPage> productsToThrow = [];
+  int _addedToCart = 0;
+  List<int> _addedToCartIds = [];
 
   // Level components
-  final attentionSpanText =
-      TextComponent(text: 'Attention span left: 100%', textRenderer: kRegular);
-  final relevantProductsText =
-      TextComponent(text: 'Relevant products found: 0', textRenderer: kRegular);
+  final addedToCartText =
+      TextComponent(text: 'Products added to cart: 0', textRenderer: kRegular);
+
   final diedText = TextComponent(
-      text: 'You got choice paralysis!', textRenderer: kBiggerText);
-  final succeedText =
-      TextComponent(text: 'You found products!', textRenderer: kBiggerText);
+      text: 'You added 0 products to cart!', textRenderer: kBiggerText);
+  final succeedText = TextComponent(
+      text: 'You added products to cart!', textRenderer: kBiggerText);
 
   @override
   Future<void>? onLoad() async {
     _levelBounds = const Rect.fromLTWH(
       0,
-      -800,
+      0,
       kScreenWidth,
-      kScreenHeight + 1600,
+      kScreenHeight,
     );
     _spawnActors();
     return super.onLoad();
@@ -93,28 +93,19 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
-      decrementAttentionSpan: () {
-        if (_attentionSpan > 0) {
-          _attentionSpan -= 1;
-          attentionSpanText.text =
-              'Attention span left: ${_attentionSpan.toStringAsFixed(0)}%';
-        } else {
-          attentionSpanText.text = 'Attention span left: 0%';
-        }
-      },
+      decrementAttentionSpan: () {},
       incrementPoints: (int productId) {
         if (!isDead && !hasSucceded) {
-          _relevantFound += 1;
-          _relevantFoundIds.add(productId);
-          relevantProductsText.text =
-              'Relevant products found: $_relevantFound';
+          _addedToCart += 1;
+          _addedToCartIds.add(productId);
+
           succeedText.text =
-              'You found $_relevantFound products! $_relevantFoundIds';
+              'You added $_addedToCart products! $_addedToCartIds';
         }
       },
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
-      position: Vector2(kScreenWidth / 2, 200),
+      position: Vector2(200, 200),
       size: Vector2(
         playerWidth,
         playerHeight,
@@ -122,34 +113,18 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     );
     add(_player);
 
-    //! Attention span
-    attentionSpanText
+    //! Added to cart text
+    addedToCartText
       ..anchor = Anchor.topCenter
       ..x = kScreenWidth / 2 // size is a property from game
       ..y = 40.0;
-    add(attentionSpanText);
+    add(addedToCartText);
 
-    //! Relevant products
-    relevantProductsText
-      ..anchor = Anchor.topCenter
-      ..x = kScreenWidth / 2 // size is a property from game
-      ..y = 72.0;
-    add(relevantProductsText);
-  }
-
-  //! UPDATE
-  @override
-  void update(double dt) {
-    //! Spawn new product pages
-    if (timeToLoadProduct == true && !isDead && !hasSucceded) {
-      timeToLoadProduct = false;
-      final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
-      //TODO: Implement real product info
-      // Random int between 0 and 14 to randomize what productpage.
-      final _productIndex = Random().nextInt(13) + 1;
+    //! Products to throw behind player
+    int _productsAdded = 0;
+    for (int _productId in productIds) {
       Image _productImage;
-
-      switch (_productIndex) {
+      switch (_productId) {
         case 1:
           _productImage = gameRef.product1;
           break;
@@ -162,71 +137,45 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
         case 4:
           _productImage = gameRef.product4;
           break;
-        case 5:
-          _productImage = gameRef.product5;
-          break;
-        case 6:
-          _productImage = gameRef.product6;
-          break;
-        case 7:
-          _productImage = gameRef.product7;
-          break;
-        case 8:
-          _productImage = gameRef.product8;
-          break;
-        case 9:
-          _productImage = gameRef.product9;
-          break;
-        case 10:
-          _productImage = gameRef.product10;
-          break;
-        case 11:
-          _productImage = gameRef.product11;
-          break;
-        case 12:
-          _productImage = gameRef.product12;
-          break;
-        case 13:
-          _productImage = gameRef.product13;
-          break;
-        case 14:
-          _productImage = gameRef.product14;
-          break;
         default:
-          _productImage = gameRef.product11; // of course goomba is default :)
+          _productImage = gameRef.product1;
       }
-      bool _isRelevant = _productIndex <= 4 ? true : false;
-      print('is relevant: $_isRelevant');
-      add(
+      // Create list of product components to throw
+
+      productsToThrow.add(
         ProductPage(
           _productImage,
-          productId: _productIndex,
-          isRelevantProduct: _isRelevant,
-          levelBounds: _levelBounds,
-          anchor: Anchor.topCenter,
-          size: Vector2(276, 325),
-          position: Vector2(
-            _x,
-            -800,
+          levelBounds: Rect.fromLTWH(
+            -50,
+            0,
+            kScreenWidth,
+            kScreenHeight + 20 - (_productsAdded * 80),
           ),
+          isRelevantProduct: true,
+          anchor: Anchor.bottomCenter,
+          productId: _productId,
+          position: Vector2(0, 400),
+          size: Vector2(276, 325),
+          scale: Vector2(0.3, 0.3),
+          priority: 0,
         ),
       );
-      print('Add product page');
-      Future.delayed(Duration(seconds: 1), () {
-        timeToLoadProduct = true;
+      _productsAdded += 1;
+    }
+    // Spawn products
+    int _productsSpawned = 0;
+    for (var product in productsToThrow) {
+      Future.delayed(Duration(milliseconds: _productsSpawned * 500 + 1000), () {
+        add(product);
+        product.x += _productsSpawned * 5;
       });
+      _productsSpawned += 1;
     }
+  }
 
-    //! Check if attention span has reached 0
-    if (_attentionSpan <= 0 && !isDead && !hasSucceded) {
-      if (_relevantFound == 0) {
-        handleDeath();
-      }
-      if (_relevantFound > 0) {
-        handleSuccess();
-      }
-    }
-
+  //! UPDATE
+  @override
+  void update(double dt) {
     super.update(dt);
   }
 

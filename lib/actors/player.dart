@@ -28,13 +28,13 @@ class Player extends SpriteComponent
 
   // Callbacks to levels
   final Function decrementAttentionSpan;
-  final Function incrementRelevantViewed;
+  final Function incrementPoints;
 
   Player(
     Image image, {
     required Rect levelBounds,
     required this.decrementAttentionSpan,
-    required this.incrementRelevantViewed,
+    required this.incrementPoints,
     Vector2? position,
     Vector2? size,
     Vector2? scale,
@@ -147,7 +147,7 @@ class Player extends SpriteComponent
         //TODO: Add to
         if (other.isRelevantProduct == true) {
           print('Is relevant product!');
-          incrementRelevantViewed(other.productId);
+          incrementPoints(other.productId);
         }
         other.hasBeenViewed = true;
       }
