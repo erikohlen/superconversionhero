@@ -18,6 +18,8 @@ class LevelsGame extends FlameGame
   Component? _currentLevel;
   Component? _levelToLoad;
 
+  @override
+
   // References to game assets
   late Image superConversionHero;
   late Image overworldSky;
@@ -44,9 +46,11 @@ class LevelsGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
+    super.debugMode = true;
     // Device setup
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();
+
     camera.viewport = FixedResolutionViewport(
       Vector2(kScreenWidth, kScreenHeight),
     );
@@ -76,7 +80,7 @@ class LevelsGame extends FlameGame
     basket = await images.load('basket1.png');
 
     // Game state
-    List<int> _productIdsCart = [1, 2];
+    List<int> _productIdsCart = [1];
 
     // Load first level
     void _loadLevels() {

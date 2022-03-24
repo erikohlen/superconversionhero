@@ -61,7 +61,8 @@ class ThrowableProduct extends SpriteComponent
 
   @override
   Future<void>? onLoad() {
-    addHitbox(HitboxRectangle(relation: Vector2(1, 1.0)));
+    //addHitbox(HitboxRectangle(relation: Vector2(1, 1.0)));
+    addHitbox(HitboxCircle());
     return super.onLoad();
   }
 
@@ -102,10 +103,11 @@ class ThrowableProduct extends SpriteComponent
     super.update(dt);
   }
 
-  void getThrown() {
+  void getThrown({required double throwStrength}) {
     print('Product thrown!');
-    _hAxisInput = 37 / 10; // correct is 37 / 10
-    _jumpSpeed = 800;
+    // 1 - 10
+    _hAxisInput = (throwStrength + 30) / 10; // correct is 37 / 10
+    _jumpSpeed = 600 + (throwStrength * 15);
     _jumpInput = true;
   }
 

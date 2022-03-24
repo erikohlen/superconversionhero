@@ -70,15 +70,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
     _background = Background(gameRef.overworldSky);
     _background.size = Vector2(kScreenWidth, kScreenHeight);
     add(_background);
-    //! Basket
-    _basket = SpriteComponent(
-      sprite: Sprite(
-        gameRef.basket,
-      ),
-      anchor: Anchor.center,
-      position: Vector2(kScreenWidth - 120, 250),
-    );
-    add(_basket);
+
     //! Added to cart text
     addedToCartText
       ..anchor = Anchor.topCenter
@@ -191,15 +183,73 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
       _productsSpawned += 1;
     }
 
+    //! Basket
+    _basket = SpriteComponent(
+      sprite: Sprite(
+        gameRef.basket,
+      ),
+      anchor: Anchor.center,
+      position: Vector2(
+        kScreenWidth - 120,
+        250,
+      ),
+      priority: 100,
+    );
+    add(_basket);
+
+    //! Basket hitboxes
+    //Frontrim
+    add(
+      PlatformHitbox(
+        type: 'playerholding',
+        anchor: Anchor.topLeft,
+        size: Vector2(10, 80),
+        position: Vector2(
+          kScreenWidth - 200,
+          220,
+        ),
+        angle: -0.3,
+        priority: 300,
+      ),
+    );
+    //Bottom
+    add(
+      PlatformHitbox(
+        type: 'basketbottom',
+        anchor: Anchor.topLeft,
+        size: Vector2(100, 40),
+        position: Vector2(
+          kScreenWidth - 180,
+          260,
+        ),
+        priority: 300,
+      ),
+    );
+    //Backboard
+    add(
+      PlatformHitbox(
+        type: 'playerholding',
+        anchor: Anchor.topLeft,
+        size: Vector2(50, 100),
+        position: Vector2(kScreenWidth - 90, 180),
+      ),
+    );
+
     //! Handle Throwing
     //TODO: Wrap in function
-    Future.delayed(Duration(milliseconds: productsToThrow.length * 500 + 1000),
+    Future.delayed(
+        Duration(milliseconds: 1 /* productsToThrow.length * 500 + 1000 */),
         () {
       // Hide from stack
       if (productsToThrow.length > 0) {
         ThrowableProduct _productToThrow = ThrowableProduct(
           productsToThrow.last.sprite!.image,
-          levelBounds: _levelBounds,
+          levelBounds: Rect.fromLTWH(
+            -400,
+            -400,
+            kScreenWidth + 800,
+            kScreenHeight + 800,
+          ),
           productId: productsToThrow.last.productId,
           position: Vector2(205, 500),
           size: Vector2(276 / 4, 325 / 4),
@@ -207,7 +257,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
         remove(productsToThrow.last);
         add(_productToThrow);
         Future.delayed(Duration(seconds: 1), () {
-          _productToThrow.getThrown();
+          _productToThrow.getThrown(throwStrength: 15);
         });
       }
     });
