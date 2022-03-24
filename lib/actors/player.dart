@@ -147,7 +147,7 @@ class Player extends SpriteComponent
         //TODO: Add to
         if (other.isRelevantProduct == true) {
           print('Is relevant product!');
-          incrementRelevantViewed();
+          incrementRelevantViewed(other.productId);
         }
         other.hasBeenViewed = true;
       }

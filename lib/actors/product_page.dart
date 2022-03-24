@@ -18,10 +18,14 @@ class ProductPage extends SpriteComponent
   bool hasBeenViewed = false;
   late bool isRelevantProduct;
 
+  // Product details
+  final int productId;
+
   ProductPage(
     Image image, {
     required Rect levelBounds,
     required this.isRelevantProduct,
+    required this.productId,
     Vector2? position,
     Vector2? size,
     Vector2? scale,

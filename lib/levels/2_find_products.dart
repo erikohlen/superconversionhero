@@ -37,10 +37,11 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
   // Level specific state
   bool timeToLoadProduct = true;
   double _attentionSpan = 100;
-  int _relevantViewed = 0;
+  int _relevantFound = 0;
+  List<int> _relevantFoundIds = [];
 
   // Level components
-  final viewedProductsText =
+  final attentionSpanText =
       TextComponent(text: 'Attention span left: 100%', textRenderer: kRegular);
   final relevantProductsText =
       TextComponent(text: 'Relevant products found: 0', textRenderer: kRegular);
@@ -95,15 +96,18 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       decrementAttentionSpan: () {
         if (_attentionSpan > 0) {
           _attentionSpan -= 1;
-          viewedProductsText.text =
+          attentionSpanText.text =
               'Attention span left: ${_attentionSpan.toStringAsFixed(0)}%';
         } else {
-          viewedProductsText.text = 'Attention span left: 0%';
+          attentionSpanText.text = 'Attention span left: 0%';
         }
       },
-      incrementRelevantViewed: () {
-        _relevantViewed += 1;
-        relevantProductsText.text = 'Relevant products found: $_relevantViewed';
+      incrementRelevantViewed: (int productId) {
+        _relevantFound += 1;
+        _relevantFoundIds.add(productId);
+        relevantProductsText.text = 'Relevant products found: $_relevantFound';
+        succeedText.text =
+            'You found $_relevantFound products! $_relevantFoundIds';
       },
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
@@ -115,12 +119,12 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     );
     add(_player);
 
-    //! Viewed products
-    viewedProductsText
+    //! Attention span
+    attentionSpanText
       ..anchor = Anchor.topCenter
       ..x = kScreenWidth / 2 // size is a property from game
       ..y = 40.0;
-    add(viewedProductsText);
+    add(attentionSpanText);
 
     //! Relevant products
     relevantProductsText
@@ -138,11 +142,62 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       timeToLoadProduct = false;
       final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
       //TODO: Implement real product info
-      final _isRelevant = Random().nextInt(10) > 5 ? true : false;
+      // Random int between 0 and 14 to randomize what productpage.
+      final _productIndex = Random().nextInt(13) + 1;
+      Image _productImage;
+
+      switch (_productIndex) {
+        case 1:
+          _productImage = gameRef.product1;
+          break;
+        case 2:
+          _productImage = gameRef.product2;
+          break;
+        case 3:
+          _productImage = gameRef.product3;
+          break;
+        case 4:
+          _productImage = gameRef.product4;
+          break;
+        case 5:
+          _productImage = gameRef.product5;
+          break;
+        case 6:
+          _productImage = gameRef.product6;
+          break;
+        case 7:
+          _productImage = gameRef.product7;
+          break;
+        case 8:
+          _productImage = gameRef.product8;
+          break;
+        case 9:
+          _productImage = gameRef.product9;
+          break;
+        case 10:
+          _productImage = gameRef.product10;
+          break;
+        case 11:
+          _productImage = gameRef.product11;
+          break;
+        case 12:
+          _productImage = gameRef.product12;
+          break;
+        case 13:
+          _productImage = gameRef.product13;
+          break;
+        case 14:
+          _productImage = gameRef.product14;
+          break;
+        default:
+          _productImage = gameRef.product11; // of course goomba is default :)
+      }
+      bool _isRelevant = _productIndex <= 4 ? true : false;
       print('is relevant: $_isRelevant');
       add(
         ProductPage(
-          gameRef.product,
+          _productImage,
+          productId: _productIndex,
           isRelevantProduct: _isRelevant,
           levelBounds: _levelBounds,
           anchor: Anchor.topCenter,
@@ -161,10 +216,10 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
 
     //! Check if attention span has reached 0
     if (_attentionSpan <= 0 && !isDead && !hasSucceded) {
-      if (_relevantViewed == 0) {
+      if (_relevantFound == 0) {
         handleDeath();
       }
-      if (_relevantViewed > 0) {
+      if (_relevantFound > 0) {
         handleSuccess();
       }
     }
