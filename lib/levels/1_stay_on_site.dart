@@ -80,6 +80,8 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
+      incrementProductsViewed: () {},
+      incrementRelevantViewed: () {},
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
       position: Vector2(kScreenWidth / 2, 200),

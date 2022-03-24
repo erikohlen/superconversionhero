@@ -75,6 +75,8 @@ class MyGame extends FlameGame
     final playerImage = await images.load('hero_right_small.png');
     _player = Player(
       playerImage,
+      incrementProductsViewed: () {},
+      incrementRelevantViewed: () {},
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
       position: Vector2(screenWidth / 2, 200),

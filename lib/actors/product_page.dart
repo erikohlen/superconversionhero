@@ -7,7 +7,6 @@ import 'package:flame/input.dart';
 class ProductPage extends SpriteComponent
     with HasHitboxes, Collidable, KeyboardHandler {
   final double _gravity = 5;
-
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
 
@@ -15,9 +14,14 @@ class ProductPage extends SpriteComponent
   late Vector2 _minClamp;
   late Vector2 _maxClamp;
 
+  // Product page state
+  bool hasBeenViewed = false;
+  late bool isRelevantProduct;
+
   ProductPage(
     Image image, {
     required Rect levelBounds,
+    required this.isRelevantProduct,
     Vector2? position,
     Vector2? size,
     Vector2? scale,

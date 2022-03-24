@@ -5,6 +5,7 @@ import 'package:flame/input.dart';
 
 import 'package:flutter/services.dart';
 import 'package:superconversionhero/actors/platform.dart';
+import 'package:superconversionhero/actors/product_page.dart';
 
 // Represents a player in the game world.
 class Player extends SpriteComponent
@@ -25,9 +26,15 @@ class Player extends SpriteComponent
   late Vector2 _minClamp;
   late Vector2 _maxClamp;
 
+  // Callbacks to levels
+  final Function incrementProductsViewed;
+  final Function incrementRelevantViewed;
+
   Player(
     Image image, {
     required Rect levelBounds,
+    required this.incrementProductsViewed,
+    required this.incrementRelevantViewed,
     Vector2? position,
     Vector2? size,
     Vector2? scale,
@@ -131,6 +138,21 @@ class Player extends SpriteComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
+    if (other is ProductPage) {
+      print('Collided with product page');
+      if (other.hasBeenViewed == false) {
+        //TODO: Add to viewed counter
+        incrementProductsViewed();
+
+        //TODO: Add to
+        if (other.isRelevantProduct == true) {
+          print('Is relevant product!');
+          incrementRelevantViewed();
+        }
+        other.hasBeenViewed = true;
+      }
+    }
+
     super.onCollision(intersectionPoints, other);
   }
 }

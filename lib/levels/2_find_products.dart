@@ -33,6 +33,8 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
 
   // Level specific state
   bool timeToLoadProduct = true;
+  int _productsViewed = 0;
+  int _relevantViewed = 0;
 
   // Level components
   final viewedProductsText =
@@ -87,6 +89,14 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
+      incrementProductsViewed: () {
+        _productsViewed += 1;
+        viewedProductsText.text = 'Viewed products: $_productsViewed';
+      },
+      incrementRelevantViewed: () {
+        _relevantViewed += 1;
+        relevantProductsText.text = 'Relevant products: $_relevantViewed';
+      },
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
       position: Vector2(kScreenWidth / 2, 200),
@@ -110,31 +120,22 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       ..x = kScreenWidth / 2 // size is a property from game
       ..y = 72.0;
     add(relevantProductsText);
-
-    //! Test add product
-    add(
-      ProductPage(
-        gameRef.product,
-        levelBounds: _levelBounds,
-        anchor: Anchor.topCenter,
-        size: Vector2(276, 325),
-        position: Vector2(
-          200,
-          -800,
-        ),
-      ),
-    );
   }
 
   //! UPDATE
   @override
   void update(double dt) {
+    //! Spawn new product pages
     if (timeToLoadProduct == true) {
       timeToLoadProduct = false;
       final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
+      //TODO: Implement real product info
+      final _isRelevant = Random().nextInt(10) > 5 ? true : false;
+      print('is relevant: $_isRelevant');
       add(
         ProductPage(
           gameRef.product,
+          isRelevantProduct: _isRelevant,
           levelBounds: _levelBounds,
           anchor: Anchor.topCenter,
           size: Vector2(276, 325),
@@ -145,7 +146,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
         ),
       );
       print('Add product page');
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 1), () {
         timeToLoadProduct = true;
       });
     }
