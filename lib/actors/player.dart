@@ -116,7 +116,7 @@ class Player extends SpriteComponent
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
-    if (other is PlatformHitbox) {
+    if (other is PlatformHitbox && other.type != 'playerholding') {
       if (intersectionPoints.length == 2) {
         // Calculate the collision normal and separation distance.
         final mid = (intersectionPoints.elementAt(0) +

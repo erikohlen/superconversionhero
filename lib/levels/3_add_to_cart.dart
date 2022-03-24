@@ -114,6 +114,15 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
     );
     add(_player);
 
+    //! Ground platform hitbox
+    final _playerHitbox = PlatformHitbox(
+      type: 'playerholding',
+      anchor: Anchor.bottomLeft,
+      size: Vector2(200, 123),
+      position: Vector2(100, kScreenHeight - 100),
+    );
+    add(_playerHitbox);
+
     //! Added to cart text
     addedToCartText
       ..anchor = Anchor.topCenter
@@ -182,7 +191,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
           productsToThrow.last.sprite!.image,
           levelBounds: _levelBounds,
           productId: productsToThrow.last.productId,
-          position: Vector2(200, 500),
+          position: Vector2(205, 500),
           size: Vector2(276 / 4, 325 / 4),
         );
         remove(productsToThrow.last);

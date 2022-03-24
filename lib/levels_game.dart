@@ -74,7 +74,7 @@ class LevelsGame extends FlameGame
     product14 = await images.load('product14.png');
 
     // Game state
-    List<int> _productIdsCart = [1, 2, 3, 4];
+    List<int> _productIdsCart = [1, 2];
 
     // Load first level
     void _loadLevels() {
