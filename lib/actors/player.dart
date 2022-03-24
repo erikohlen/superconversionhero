@@ -29,12 +29,14 @@ class Player extends SpriteComponent
   // Callbacks to levels
   final Function decrementAttentionSpan;
   final Function incrementPoints;
+  bool isMovableSideways;
 
   Player(
     Image image, {
     required Rect levelBounds,
     required this.decrementAttentionSpan,
     required this.incrementPoints,
+    this.isMovableSideways = true,
     Vector2? position,
     Vector2? size,
     Vector2? scale,
@@ -106,9 +108,12 @@ class Player extends SpriteComponent
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     _hAxisInput = 0;
-
-    _hAxisInput += keysPressed.contains(LogicalKeyboardKey.arrowLeft) ? -1 : 0;
-    _hAxisInput += keysPressed.contains(LogicalKeyboardKey.arrowRight) ? 1 : 0;
+    if (isMovableSideways) {
+      _hAxisInput +=
+          keysPressed.contains(LogicalKeyboardKey.arrowLeft) ? -1 : 0;
+      _hAxisInput +=
+          keysPressed.contains(LogicalKeyboardKey.arrowRight) ? 1 : 0;
+    }
     _jumpInput = keysPressed.contains(LogicalKeyboardKey.space);
 
     return true;

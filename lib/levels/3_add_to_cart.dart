@@ -108,16 +108,17 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
+      isMovableSideways: false,
       decrementAttentionSpan: () {},
-      incrementPoints: (int productId) {
+      incrementPoints: () {},
+      /* (int productId) {
         if (!isDead && !hasSucceded) {
           _addedToCart += 1;
           _addedToCartIds.add(productId);
 
-          succeedText.text =
-              'You added $_addedToCart products! $_addedToCartIds';
+          succeedText.text = 'You added $_addedToCart products to cart!';
         }
-      },
+      }, */
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
       position: Vector2(200, 200),
@@ -246,8 +247,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
   bool _isMeterShowing = false;
   int _triangleSpeed = 5;
   double _throwStrength = 0;
-  //! Handle Throwing
 
+  //! Handle Throwing
   void showMeter() {
     _meter = SpriteComponent(
       sprite: Sprite(gameRef.meter),
@@ -279,6 +280,11 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         productId: productsToThrow.last.productId,
         position: Vector2(205, 500),
         size: Vector2(276 / 4, 325 / 4),
+        addToCart: (int productId) {
+          _addedToCart += 1;
+          addedToCartText.text = 'Products added to cart: $_addedToCart';
+          succeedText.text = 'You added $_addedToCart products to cart!';
+        },
       );
       // Remove product from level
       remove(productsToThrow.last);
@@ -349,6 +355,16 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         _triangleSpeed = 15;
       }
     }
+
+    if (productsToThrow.length == 0) {
+      if (_addedToCart == 0) {
+        handleDeath();
+      }
+      if (_addedToCart > 0) {
+        handleSuccess();
+      }
+    }
+
     super.update(dt);
   }
 
@@ -364,7 +380,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         // TODO: Move into first definition
         diedText.anchor = Anchor.topCenter;
         diedText.x = kScreenWidth / 2;
-        diedText.y = 300;
+        diedText.y = kScreenHeight / 2;
 
         Future.delayed(
           const Duration(
@@ -389,7 +405,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         add(succeedText);
         succeedText.anchor = Anchor.topCenter;
         succeedText.x = kScreenWidth / 2;
-        succeedText.y = 300;
+        succeedText.y = kScreenHeight / 2;
         Future.delayed(
           const Duration(
             milliseconds: 5000,

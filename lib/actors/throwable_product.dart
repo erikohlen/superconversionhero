@@ -29,11 +29,16 @@ class ThrowableProduct extends SpriteComponent
 
   // Product details
   final int productId;
+  final Function addToCart;
+
+  // Component state
+  bool _hasAddedToCart = false;
 
   ThrowableProduct(
     Image image, {
     required Rect levelBounds,
     required this.productId,
+    required this.addToCart,
     Vector2? position,
     Vector2? size,
     Vector2? scale,
@@ -114,6 +119,11 @@ class ThrowableProduct extends SpriteComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     if (other is PlatformHitbox) {
+      if (other.type == 'basketbottom' && !_hasAddedToCart) {
+        addToCart(productId);
+        _hasAddedToCart = true;
+      }
+
       if (intersectionPoints.length == 2) {
         // Calculate the collision normal and separation distance.
         final mid = (intersectionPoints.elementAt(0) +
@@ -135,30 +145,6 @@ class ThrowableProduct extends SpriteComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
-    /*  if (other is Player) {
-      if (intersectionPoints.length == 2) {
-        if (intersectionPoints.length == 2) {
-          // Calculate the collision normal and separation distance.
-          final mid = (intersectionPoints.elementAt(0) +
-                  intersectionPoints.elementAt(1)) /
-              2;
-
-          final collisionNormal = absoluteCenter - mid;
-          final separationDistance = (size.x / 2) - collisionNormal.length;
-          collisionNormal.normalize();
-
-          // If collision normal is almost upwards,
-          // player must be on ground.
-          if (_up.dot(collisionNormal) > 0.9) {
-            _isOnGround = true;
-          }
-
-          // Resolve collision by moving player along
-          // collision normal by separation distance.
-          position += collisionNormal.scaled(separationDistance);
-        }
-      }
-    } */
 
     super.onCollision(intersectionPoints, other);
   }
