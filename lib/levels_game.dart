@@ -43,10 +43,12 @@ class LevelsGame extends FlameGame
   late Image product13;
   late Image product14;
   late Image basket;
+  late Image meter;
+  late Image triangle;
 
   @override
   Future<void>? onLoad() async {
-    super.debugMode = true;
+    //super.debugMode = true;
     // Device setup
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();
@@ -78,9 +80,11 @@ class LevelsGame extends FlameGame
     product13 = await images.load('product13.png');
     product14 = await images.load('product14.png');
     basket = await images.load('basket1.png');
+    meter = await images.load('meter.png');
+    triangle = await images.load('triangle.png');
 
     // Game state
-    List<int> _productIdsCart = [1];
+    List<int> _productIdsCart = [4, 3, 2, 1];
 
     // Load first level
     void _loadLevels() {

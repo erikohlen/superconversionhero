@@ -14,7 +14,7 @@ import '../actors/platform.dart';
 import '../actors/player.dart';
 import '../actors/product_page.dart';
 
-class AddToCart extends Component with HasGameRef<LevelsGame> {
+class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
   late Player _player;
 
   late Rect _levelBounds;
@@ -41,6 +41,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
   List<ProductPage> productsToThrow = [];
   int _addedToCart = 0;
   List<int> _addedToCartIds = [];
+  bool _isFirstProductLoaded = false;
 
   // Level components
   final addedToCartText =
@@ -51,6 +52,9 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
   final succeedText = TextComponent(
       text: 'You added products to cart!', textRenderer: kBiggerText);
   late SpriteComponent _basket;
+  late SpriteComponent _meter;
+  late SpriteComponent _triangle;
+
   @override
   Future<void>? onLoad() async {
     _levelBounds = const Rect.fromLTWH(
@@ -62,6 +66,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
     _spawnActors();
     return super.onLoad();
   }
+
+  ThrowableProduct? _productToThrow;
 
   // This method takes care of spawning
   // all the actors in the game world.
@@ -234,38 +240,115 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
         position: Vector2(kScreenWidth - 90, 180),
       ),
     );
+  }
 
-    //! Handle Throwing
-    //TODO: Wrap in function
-    Future.delayed(
-        Duration(milliseconds: 1 /* productsToThrow.length * 500 + 1000 */),
-        () {
-      // Hide from stack
-      if (productsToThrow.length > 0) {
-        ThrowableProduct _productToThrow = ThrowableProduct(
-          productsToThrow.last.sprite!.image,
-          levelBounds: Rect.fromLTWH(
-            -400,
-            -400,
-            kScreenWidth + 800,
-            kScreenHeight + 800,
-          ),
-          productId: productsToThrow.last.productId,
-          position: Vector2(205, 500),
-          size: Vector2(276 / 4, 325 / 4),
-        );
-        remove(productsToThrow.last);
-        add(_productToThrow);
-        Future.delayed(Duration(seconds: 1), () {
-          _productToThrow.getThrown(throwStrength: 15);
+  bool _isProductLoaded = false;
+  bool _isMeterShowing = false;
+  int _triangleSpeed = 5;
+  double _throwStrength = 0;
+  //! Handle Throwing
+
+  void showMeter() {
+    _meter = SpriteComponent(
+      sprite: Sprite(gameRef.meter),
+      anchor: Anchor.center,
+      position: Vector2(kScreenWidth / 2, kScreenHeight / 2),
+    );
+    add(_meter);
+    _triangle = SpriteComponent(
+      sprite: Sprite(gameRef.triangle),
+      anchor: Anchor.center,
+      position: Vector2(kScreenWidth / 2 + 80, kScreenHeight / 2),
+    );
+    add(_triangle);
+    _isMeterShowing = true;
+  }
+
+  void loadProductToThrow() {
+    // Double check there is a product to load, for null check
+    if (productsToThrow.length > 0) {
+      // Define product to throw before removing stacked product behind player
+      _productToThrow = ThrowableProduct(
+        productsToThrow.last.sprite!.image,
+        levelBounds: const Rect.fromLTWH(
+          -400,
+          -400,
+          kScreenWidth + 800,
+          kScreenHeight + 800,
+        ),
+        productId: productsToThrow.last.productId,
+        position: Vector2(205, 500),
+        size: Vector2(276 / 4, 325 / 4),
+      );
+      // Remove product from level
+      remove(productsToThrow.last);
+      // Remove product from list
+      productsToThrow.remove(productsToThrow.last);
+      if (_productToThrow != null) {
+        add(_productToThrow!);
+      }
+
+      // TODO: Wait X seconds after  product is loaded in hands of player, then init throw
+      // TODO: Function to init meter and throw
+      //TODO: Load meter. Listen to "Space" keypress. Loop through strength.
+      //TODO: When pressed, throw with currentstrength
+      //_productToThrow.getThrown(throwStrength: 15);
+
+      Future.delayed(Duration(seconds: 1), () {
+        showMeter();
+      });
+    }
+  }
+
+  @override
+  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    print('Key pressed!');
+    if (keysPressed.contains(LogicalKeyboardKey.space)) {
+      if (_isMeterShowing) {
+        print('Thrown with strength: $_throwStrength');
+        _productToThrow?.getThrown(throwStrength: _throwStrength);
+        remove(_meter);
+        remove(_triangle);
+        _isMeterShowing = false;
+        Future.delayed(Duration(seconds: 3), () {
+          _isProductLoaded = false;
         });
       }
-    });
+    }
+
+    return true;
   }
 
   //! UPDATE
   @override
   void update(double dt) {
+    // Load first product
+    if (!_isProductLoaded && !_isFirstProductLoaded) {
+      _isFirstProductLoaded = true;
+      _isProductLoaded = true;
+      Future.delayed(Duration(seconds: 3), () {
+        loadProductToThrow();
+      });
+    }
+    if (!_isProductLoaded &&
+        productsToThrow.length > 0 &&
+        _isFirstProductLoaded) {
+      _isProductLoaded = true;
+
+      loadProductToThrow();
+    }
+    if (_isMeterShowing) {
+      _triangle.y -= _triangleSpeed;
+      _throwStrength =
+          7 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
+
+      if (_triangle.y <= (kScreenHeight / 2) - 140) {
+        _triangleSpeed = -15;
+      }
+      if (_triangle.y >= (kScreenHeight / 2) + 140) {
+        _triangleSpeed = 15;
+      }
+    }
     super.update(dt);
   }
 
