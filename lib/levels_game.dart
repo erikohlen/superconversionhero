@@ -3,9 +3,10 @@ import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
-import 'package:superconversionhero/levels/stay_on_site.dart';
+import 'package:superconversionhero/levels/1_stay_on_site.dart';
 
-import 'constants.dart';
+import 'constants/constants.dart';
+import 'levels/2_find_products.dart';
 import 'levels/title_screen.dart';
 import 'package:flame/extensions.dart';
 
@@ -24,6 +25,7 @@ class LevelsGame extends FlameGame
   late Image heroRight;
   late Image gigantMushroom;
   late Image bounce;
+  late Image product;
 
   @override
   Future<void>? onLoad() async {
@@ -42,22 +44,17 @@ class LevelsGame extends FlameGame
     heroRight = await images.load('hero_right_small.png');
     gigantMushroom = await images.load('gigant_mushroom.png');
     bounce = await images.load('bounce.png');
+    product = await images.load('product.png');
 
     // Load first level
-    /*   loadLevel(
-      StayOnSite(
-          handleNextScreen: () {},
-          navigateOnDeath: () {
-            loadLevel(LevelTitleScreen(handleNextScreen: () {
-              LevelBlackIntro(
-                  levelNumber: 2,
-                  levelName: 'FIND PRODUCTS',
-                  handleNextScreen: () {});
-            }));
-          }),
-    ); */
+    loadLevel(
+      FindProducts(
+        onSucceed: () {},
+        onDeath: () {},
+      ),
+    );
 
-    void _loadLevels() {
+    /*  void _loadLevels() {
       loadLevel(
         LevelTitleScreen(handleNextScreen: () {
           loadLevel(
@@ -86,9 +83,8 @@ class LevelsGame extends FlameGame
           );
         }),
       );
-    }
-
-    _loadLevels();
+       _loadLevels();
+    } */
 
     return super.onLoad();
   }

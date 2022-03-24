@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 
 import 'actors/platform.dart';
 import 'actors/player.dart';
-import 'constants.dart';
+import 'constants/constants.dart';
 
 class MyGame extends FlameGame
     with HasCollidables, HasKeyboardHandlerComponents {

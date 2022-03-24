@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:superconversionhero/actors/background.dart';
-import 'package:superconversionhero/constants.dart';
+import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flutter/services.dart';

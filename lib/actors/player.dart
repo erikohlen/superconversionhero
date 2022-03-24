@@ -15,8 +15,8 @@ class Player extends SpriteComponent
 
   final double _gravity = 30;
   final double _jumpSpeed = 800;
-  final double _fallDown = 1000;
-  final double _moveSpeed = 200;
+  final double _fallDown = 800;
+  final double _moveSpeed = 400;
 
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
