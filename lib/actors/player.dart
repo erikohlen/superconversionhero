@@ -43,7 +43,7 @@ class Player extends SpriteComponent
           scale: scale,
           angle: angle,
           anchor: anchor,
-          priority: priority,
+          priority: 10,
         ) {
     // Since anchor point for player is at the center,
     // min and max clamp limits will have to be adjusted by

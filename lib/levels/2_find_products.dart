@@ -52,18 +52,27 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       kScreenWidth,
       kScreenHeight + 1600,
     );
-
     _spawnActors();
-
     return super.onLoad();
   }
 
   // This method takes care of spawning
   // all the actors in the game world.
   void _spawnActors() {
-    _background = Background(gameRef.overworldBg);
+    _background = Background(gameRef.overworldSky);
     _background.size = Vector2(kScreenWidth, kScreenHeight);
     add(_background);
+
+    //! Ground
+    add(SpriteComponent(
+      sprite: Sprite(
+        gameRef.overworldGround,
+      ),
+      anchor: Anchor.bottomLeft,
+      position: Vector2(0, kScreenHeight),
+      size: Vector2(kScreenWidth, 140),
+      priority: 1,
+    ));
 
     //! Ground platform hitbox
     final platform = PlatformHitbox(
@@ -81,7 +90,10 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
       position: Vector2(kScreenWidth / 2, 200),
-      size: Vector2(playerWidth, playerHeight),
+      size: Vector2(
+        playerWidth,
+        playerHeight,
+      ),
     );
     add(_player);
 
