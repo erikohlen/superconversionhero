@@ -2,8 +2,8 @@ import 'package:flame/geometry.dart';
 import 'package:flame/components.dart';
 
 // Represents a platform in the game world.
-class MyHitbox extends PositionComponent with HasHitboxes, Collidable {
-  MyHitbox({
+class PlatformHitbox extends PositionComponent with HasHitboxes, Collidable {
+  PlatformHitbox({
     required Vector2 position,
     required Vector2 size,
     required String type,

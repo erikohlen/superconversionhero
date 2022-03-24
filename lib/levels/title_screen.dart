@@ -1,18 +1,23 @@
 import 'package:flame/components.dart';
+import 'package:flame/input.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
+import 'package:flame/image_composition.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flame/extensions.dart';
 import '../actors/player.dart';
 
-class LevelTitleScreen extends Component with HasGameRef<LevelsGame> {
+class LevelTitleScreen extends Component
+    with HasGameRef<LevelsGame>, KeyboardHandler {
+  final Function handleNextScreen;
   late Player _player;
   late Rect _levelBounds;
   late SpriteComponent _background;
   late SpriteComponent _superConversionHero;
 
-  LevelTitleScreen() : super();
+  LevelTitleScreen({required this.handleNextScreen}) : super();
 
   @override
   Future<void>? onLoad() async {
@@ -57,5 +62,16 @@ class LevelTitleScreen extends Component with HasGameRef<LevelsGame> {
       anchor: Anchor.topCenter,
       position: Vector2(kScreenWidth / 2, 540),
     ));
+  }
+
+  @override
+  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    print('Key pressed!');
+    if (keysPressed.contains(LogicalKeyboardKey.space)) {
+      //TODO: Go to level 1 stay on site
+      handleNextScreen();
+    }
+
+    return true;
   }
 }
