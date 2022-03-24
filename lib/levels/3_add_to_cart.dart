@@ -76,7 +76,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
         gameRef.basket,
       ),
       anchor: Anchor.center,
-      position: Vector2(kScreenWidth - 150, 200),
+      position: Vector2(kScreenWidth - 120, 250),
     );
     add(_basket);
     //! Added to cart text
@@ -191,13 +191,13 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
       _productsSpawned += 1;
     }
 
-    //! THROWING LOGIC
+    //! Handle Throwing
     //TODO: Wrap in function
     Future.delayed(Duration(milliseconds: productsToThrow.length * 500 + 1000),
         () {
       // Hide from stack
       if (productsToThrow.length > 0) {
-        ThrowableProduct _toThrow = ThrowableProduct(
+        ThrowableProduct _productToThrow = ThrowableProduct(
           productsToThrow.last.sprite!.image,
           levelBounds: _levelBounds,
           productId: productsToThrow.last.productId,
@@ -205,7 +205,10 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
           size: Vector2(276 / 4, 325 / 4),
         );
         remove(productsToThrow.last);
-        add(_toThrow);
+        add(_productToThrow);
+        Future.delayed(Duration(seconds: 1), () {
+          _productToThrow.getThrown();
+        });
       }
     });
   }

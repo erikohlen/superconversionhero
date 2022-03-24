@@ -9,14 +9,16 @@ import 'player.dart';
 // Represents a player in the game world.
 class ThrowableProduct extends SpriteComponent
     with HasHitboxes, Collidable, KeyboardHandler {
-  int _hAxisInput = 0;
+  double _hAxisInput = 0;
+  int _yAxisInput = 0;
+
   bool _jumpInput = false;
   bool _isOnGround = false;
 
-  final double _gravity = 30;
-  final double _jumpSpeed = 800;
+  final double _gravity = 10;
+  double _jumpSpeed = 10;
   final double _fallDown = 400;
-  final double _moveSpeed = 400;
+  final double _moveSpeed = 100;
 
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
@@ -98,6 +100,13 @@ class ThrowableProduct extends SpriteComponent
     }
 
     super.update(dt);
+  }
+
+  void getThrown() {
+    print('Product thrown!');
+    _hAxisInput = 37 / 10; // correct is 37 / 10
+    _jumpSpeed = 800;
+    _jumpInput = true;
   }
 
   @override
