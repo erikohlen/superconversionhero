@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
 import 'package:superconversionhero/levels/3_add_to_cart.dart';
+import 'package:superconversionhero/levels/5_complete_purchase.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
 import 'package:superconversionhero/levels/1_stay_on_site.dart';
 
@@ -45,10 +46,11 @@ class LevelsGame extends FlameGame
   late Image basket;
   late Image meter;
   late Image triangle;
+  late Image castleBg;
 
   @override
   Future<void>? onLoad() async {
-    //super.debugMode = true;
+    super.debugMode = true;
     // Device setup
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();
@@ -82,9 +84,10 @@ class LevelsGame extends FlameGame
     basket = await images.load('basket1.png');
     meter = await images.load('meter.png');
     triangle = await images.load('triangle.png');
+    castleBg = await images.load('castle_bg.png');
 
     // Game state
-    List<int> _productIdsCart = [4, 3, 2, 1];
+    List<int> _productIdsCart = [1];
 
     // Load first level
     void _loadLevels() {
@@ -107,7 +110,19 @@ class LevelsGame extends FlameGame
                           loadLevel(LevelBlackIntro(
                               levelNumber: 3,
                               levelName: 'ADD TO CART',
-                              next: () {}));
+                              next: () {
+                                loadLevel(
+                                  AddToCart(
+                                      productIds: _productIdsCart,
+                                      onDeath: _loadLevels,
+                                      onSucceed: () {
+                                        loadLevel(LevelBlackIntro(
+                                            levelNumber: 5,
+                                            levelName: 'COMPLETE PURCHASE',
+                                            next: () {}));
+                                      }),
+                                );
+                              }));
                         },
                       ));
                     },
@@ -122,14 +137,12 @@ class LevelsGame extends FlameGame
 
     // _loadLevels();
 
-    loadLevel(AddToCart(
-        productIds: _productIdsCart,
+    loadLevel(
+      CompletePurchase(
         onDeath: _loadLevels,
-        onSucceed: () {
-          print('Succeeded');
-          loadLevel(LevelBlackIntro(
-              levelNumber: 4, levelName: 'BEGIN CHECKOUT', next: () {}));
-        }));
+        onSucceed: () {},
+      ),
+    );
 
     return super.onLoad();
   }

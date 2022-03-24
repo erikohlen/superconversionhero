@@ -15,9 +15,9 @@ class Player extends SpriteComponent
   bool _isOnGround = false;
 
   final double _gravity = 30;
-  final double _jumpSpeed = 800;
+  double jumpSpeed; // = 800;
   final double _fallDown = 800;
-  final double _moveSpeed = 400;
+  double moveSpeed; // = 400;
 
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
@@ -36,6 +36,8 @@ class Player extends SpriteComponent
     required Rect levelBounds,
     required this.decrementAttentionSpan,
     required this.incrementPoints,
+    this.jumpSpeed = 800,
+    this.moveSpeed = 400,
     this.isMovableSideways = true,
     Vector2? position,
     Vector2? size,
@@ -72,14 +74,14 @@ class Player extends SpriteComponent
   void update(double dt) {
     // Modify components of velocity based on
     // inputs and gravity.
-    _velocity.x = _hAxisInput * _moveSpeed;
+    _velocity.x = _hAxisInput * moveSpeed;
     _velocity.y += _gravity;
 
     // Allow jump only if jump input is pressed
     // and player is already on ground.
     if (_jumpInput) {
       if (_isOnGround) {
-        _velocity.y = -_jumpSpeed;
+        _velocity.y = -jumpSpeed;
         _isOnGround = false;
       }
       _jumpInput = false;
@@ -87,7 +89,7 @@ class Player extends SpriteComponent
 
     // Clamp velocity along y to avoid player tunneling
     // through platforms at very high velocities.
-    _velocity.y = _velocity.y.clamp(-_jumpSpeed, _fallDown /* default: 150 */);
+    _velocity.y = _velocity.y.clamp(-jumpSpeed, _fallDown /* default: 150 */);
 
     // delta movement = velocity * time
     position += _velocity * dt;

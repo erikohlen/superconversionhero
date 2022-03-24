@@ -355,8 +355,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         _triangleSpeed = 15;
       }
     }
-
-    if (productsToThrow.length == 0) {
+    // Handle end of level
+    if (!_isProductLoaded && productsToThrow.length == 0) {
       if (_addedToCart == 0) {
         handleDeath();
       }
