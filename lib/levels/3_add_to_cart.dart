@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:superconversionhero/actors/background.dart';
+import 'package:superconversionhero/actors/throwable_product.dart';
 import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
 import 'package:flame/image_composition.dart';
@@ -145,18 +146,18 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
       productsToThrow.add(
         ProductPage(
           _productImage,
+          isRelevantProduct: true,
           levelBounds: Rect.fromLTWH(
-            -50,
+            0,
             0,
             kScreenWidth,
-            kScreenHeight + 20 - (_productsAdded * 80),
+            kScreenHeight - 100 - (_productsAdded * 80),
           ),
-          isRelevantProduct: true,
           anchor: Anchor.bottomCenter,
           productId: _productId,
-          position: Vector2(0, 400),
-          size: Vector2(276, 325),
-          scale: Vector2(0.3, 0.3),
+          position: Vector2(40, 200),
+          size: Vector2(276 / 4, 325 / 4),
+          //scale: Vector2(0.3, 0.3),
           priority: 0,
         ),
       );
@@ -165,12 +166,29 @@ class AddToCart extends Component with HasGameRef<LevelsGame> {
     // Spawn products
     int _productsSpawned = 0;
     for (var product in productsToThrow) {
-      Future.delayed(Duration(milliseconds: _productsSpawned * 500 + 1000), () {
+      Future.delayed(Duration(milliseconds: _productsSpawned * 500), () {
         add(product);
         product.x += _productsSpawned * 5;
       });
       _productsSpawned += 1;
     }
+
+    // Remove last product from pile
+    Future.delayed(Duration(milliseconds: productsToThrow.length * 500 + 1000),
+        () {
+      // Hide from stack
+      if (productsToThrow.length > 0) {
+        ThrowableProduct _toThrow = ThrowableProduct(
+          productsToThrow.last.sprite!.image,
+          levelBounds: _levelBounds,
+          productId: productsToThrow.last.productId,
+          position: Vector2(200, 500),
+          size: Vector2(276 / 4, 325 / 4),
+        );
+        remove(productsToThrow.last);
+        add(_toThrow);
+      }
+    });
   }
 
   //! UPDATE

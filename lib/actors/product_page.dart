@@ -37,7 +37,7 @@ class ProductPage extends SpriteComponent
           srcPosition: Vector2.zero(),
           srcSize: Vector2(276, 325),
           position: position,
-          size: Vector2(276, 325),
+          size: size,
           scale: scale,
           angle: angle,
           anchor: anchor,
