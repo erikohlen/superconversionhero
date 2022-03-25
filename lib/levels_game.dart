@@ -47,6 +47,7 @@ class LevelsGame extends FlameGame
   late Image meter;
   late Image triangle;
   late Image castleBg;
+  late Image player2;
 
   @override
   Future<void>? onLoad() async {
@@ -85,6 +86,7 @@ class LevelsGame extends FlameGame
     meter = await images.load('meter.png');
     triangle = await images.load('triangle.png');
     castleBg = await images.load('castle_bg.png');
+    player2 = await images.load('player2.png');
 
     // Game state
     List<int> _productIdsCart = [1];
@@ -119,7 +121,14 @@ class LevelsGame extends FlameGame
                                         loadLevel(LevelBlackIntro(
                                             levelNumber: 5,
                                             levelName: 'COMPLETE PURCHASE',
-                                            next: () {}));
+                                            next: () {
+                                              loadLevel(
+                                                CompletePurchase(
+                                                  onDeath: _loadLevels,
+                                                  onSucceed: () {},
+                                                ),
+                                              );
+                                            }));
                                       }),
                                 );
                               }));
@@ -135,14 +144,14 @@ class LevelsGame extends FlameGame
       ));
     }
 
-    // _loadLevels();
+    _loadLevels();
 
-    loadLevel(
+    /*   loadLevel(
       CompletePurchase(
         onDeath: _loadLevels,
         onSucceed: () {},
       ),
-    );
+    ); */
 
     return super.onLoad();
   }

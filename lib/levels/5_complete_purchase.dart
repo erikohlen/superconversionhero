@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flame/extensions.dart';
 import '../actors/platform.dart';
 import '../actors/player.dart';
+import '../actors/player2.dart';
 import '../actors/product_page.dart';
 
 class CompletePurchase extends Component with HasGameRef<LevelsGame> {
@@ -86,7 +87,43 @@ class CompletePurchase extends Component with HasGameRef<LevelsGame> {
         type: 'platform',
         anchor: Anchor.bottomLeft,
         position: Vector2(0, castleHeight),
-        size: Vector2(castleWidth, 145),
+        size: Vector2(castleWidth, 140),
+      ),
+    );
+    // First box
+    add(
+      PlatformHitbox(
+        type: 'platform',
+        anchor: Anchor.bottomLeft,
+        position: Vector2(370, castleHeight - 140),
+        size: Vector2(7 * 38, 225),
+      ),
+    );
+    // Second box
+    add(
+      PlatformHitbox(
+        type: 'platform',
+        anchor: Anchor.bottomLeft,
+        position: Vector2(365 + 15 * 38, castleHeight - 140),
+        size: Vector2(7 * 38, 225),
+      ),
+    );
+    // Bridge part
+    add(
+      PlatformHitbox(
+        type: 'platform',
+        anchor: Anchor.bottomLeft,
+        position: Vector2(365 + 30 * 38, 6 * 38),
+        size: Vector2(10 * 38, 6 * 38),
+      ),
+    );
+    // Box over entry to bridge
+    add(
+      PlatformHitbox(
+        type: 'platform',
+        anchor: Anchor.bottomLeft,
+        position: Vector2(365 + 30 * 38, castleHeight - 140),
+        size: Vector2(1660, 225),
       ),
     );
 
@@ -99,14 +136,23 @@ class CompletePurchase extends Component with HasGameRef<LevelsGame> {
       incrementPoints: (int productId) {},
       jumpSpeed: 1200,
       moveSpeed: 600,
-      anchor: Anchor.bottomCenter,
+      anchor: Anchor.center,
       position: Vector2(100, 200),
-      size: Vector2(
-        playerWidth,
-        playerHeight,
-      ),
+      size: Vector2(32, 32),
     );
     add(_player);
+
+    /* //! TEST - Player2
+    add(Player2(
+      gameRef.player2,
+      anchor: Anchor.center,
+      levelBounds: _levelBounds,
+      position: Vector2(100, 100),
+      size: Vector2(32, 32),
+
+      /*  position: Vector2(spawnPoint.x, spawnPoint.y),
+            size: Vector2(spawnPoint.width, spawnPoint.height), */
+    )); */
   }
 
   //! UPDATE

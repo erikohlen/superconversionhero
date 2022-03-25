@@ -2,22 +2,20 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/input.dart';
-
 import 'package:flutter/services.dart';
 import 'package:superconversionhero/actors/platform.dart';
-import 'package:superconversionhero/actors/product_page.dart';
+import 'package:superconversionhero/actors/platform2.dart';
 
 // Represents a player in the game world.
-class Player extends SpriteComponent
+class Player2 extends SpriteComponent
     with HasHitboxes, Collidable, KeyboardHandler {
   int _hAxisInput = 0;
   bool _jumpInput = false;
   bool _isOnGround = false;
 
-  final double _gravity = 30;
-  double jumpSpeed; // = 800;
-  final double _fallDown = 800;
-  double moveSpeed; // = 400;
+  final double _gravity = 10;
+  final double _jumpSpeed = 320;
+  final double _moveSpeed = 200;
 
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
@@ -26,19 +24,9 @@ class Player extends SpriteComponent
   late Vector2 _minClamp;
   late Vector2 _maxClamp;
 
-  // Callbacks to levels
-  final Function decrementAttentionSpan;
-  final Function incrementPoints;
-  bool isMovableSideways;
-
-  Player(
+  Player2(
     Image image, {
     required Rect levelBounds,
-    required this.decrementAttentionSpan,
-    required this.incrementPoints,
-    this.jumpSpeed = 800,
-    this.moveSpeed = 400,
-    this.isMovableSideways = true,
     Vector2? position,
     Vector2? size,
     Vector2? scale,
@@ -48,13 +36,13 @@ class Player extends SpriteComponent
   }) : super.fromImage(
           image,
           srcPosition: Vector2.zero(),
-          srcSize: Vector2.all(140),
+          srcSize: Vector2.all(32),
           position: position,
           size: Vector2(140, 140),
           scale: scale,
           angle: angle,
           anchor: anchor,
-          priority: 10,
+          priority: priority,
         ) {
     // Since anchor point for player is at the center,
     // min and max clamp limits will have to be adjusted by
@@ -67,7 +55,6 @@ class Player extends SpriteComponent
   @override
   Future<void>? onLoad() {
     addHitbox(HitboxCircle());
-    //addHitbox(HitboxRectangle(relation: Vector2(1, 1.0)));
     return super.onLoad();
   }
 
@@ -75,14 +62,14 @@ class Player extends SpriteComponent
   void update(double dt) {
     // Modify components of velocity based on
     // inputs and gravity.
-    _velocity.x = _hAxisInput * moveSpeed;
+    _velocity.x = _hAxisInput * _moveSpeed;
     _velocity.y += _gravity;
 
     // Allow jump only if jump input is pressed
     // and player is already on ground.
     if (_jumpInput) {
       if (_isOnGround) {
-        _velocity.y = -jumpSpeed;
+        _velocity.y = -_jumpSpeed;
         _isOnGround = false;
       }
       _jumpInput = false;
@@ -90,7 +77,7 @@ class Player extends SpriteComponent
 
     // Clamp velocity along y to avoid player tunneling
     // through platforms at very high velocities.
-    _velocity.y = _velocity.y.clamp(-jumpSpeed, _fallDown /* default: 150 */);
+    _velocity.y = _velocity.y.clamp(-_jumpSpeed, 150);
 
     // delta movement = velocity * time
     position += _velocity * dt;
@@ -111,12 +98,9 @@ class Player extends SpriteComponent
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     _hAxisInput = 0;
-    if (isMovableSideways) {
-      _hAxisInput +=
-          keysPressed.contains(LogicalKeyboardKey.arrowLeft) ? -1 : 0;
-      _hAxisInput +=
-          keysPressed.contains(LogicalKeyboardKey.arrowRight) ? 1 : 0;
-    }
+
+    _hAxisInput += keysPressed.contains(LogicalKeyboardKey.keyA) ? -1 : 0;
+    _hAxisInput += keysPressed.contains(LogicalKeyboardKey.keyD) ? 1 : 0;
     _jumpInput = keysPressed.contains(LogicalKeyboardKey.space);
 
     return true;
@@ -124,7 +108,7 @@ class Player extends SpriteComponent
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
-    if (other is PlatformHitbox && other.type != 'playerholding') {
+    if (other is PlatformHitbox) {
       if (intersectionPoints.length == 2) {
         // Calculate the collision normal and separation distance.
         final mid = (intersectionPoints.elementAt(0) +
@@ -146,22 +130,6 @@ class Player extends SpriteComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
-
-    if (other is ProductPage) {
-      print('Collided with product page');
-      decrementAttentionSpan();
-      if (other.hasBeenViewed == false) {
-        //TODO: Add to viewed counter
-
-        //TODO: Add to
-        if (other.isRelevantProduct == true) {
-          print('Is relevant product!');
-          incrementPoints(other.productId);
-        }
-        other.hasBeenViewed = true;
-      }
-    }
-
     super.onCollision(intersectionPoints, other);
   }
 }
