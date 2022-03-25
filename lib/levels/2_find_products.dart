@@ -81,13 +81,12 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     ));
 
     //! Ground platform hitbox
-    final _platform = PlatformHitbox(
+    add(PlatformHitbox(
       type: 'platform',
       anchor: Anchor.bottomLeft,
       size: Vector2(kScreenWidth, 132),
       position: Vector2(0, kScreenHeight),
-    );
-    add(_platform);
+    ));
 
     //! Player
     final playerImage = gameRef.heroRight;
@@ -108,8 +107,10 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
           _relevantFoundIds.add(productId);
           relevantProductsText.text =
               'Relevant products found: $_relevantFound';
-          succeedText.text =
-              'You found $_relevantFound products! $_relevantFoundIds';
+          succeedText.text = 'You found $_relevantFound products! ';
+          if (_relevantFound == 1) {
+            succeedText.text = 'You found $_relevantFound product! ';
+          }
         }
       },
       anchor: Anchor.bottomCenter,
@@ -196,7 +197,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
           _productImage = gameRef.product11; // of course goomba is default :)
       }
       bool _isRelevant = _productIndex <= 4 ? true : false;
-      print('is relevant: $_isRelevant');
+
       add(
         ProductPage(
           _productImage,
@@ -211,7 +212,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
           ),
         ),
       );
-      print('Add product page');
+
       Future.delayed(Duration(seconds: 1), () {
         timeToLoadProduct = true;
       });

@@ -14,9 +14,10 @@ import '../actors/player.dart';
 
 class StayOnSite extends Component with HasGameRef<LevelsGame> {
   late Player _player;
-  late SpriteComponent bounce;
-  late Rect _levelBounds;
   late SpriteComponent _background;
+  late SpriteComponent _bounce;
+  late PlatformHitbox _mushroomPlatform;
+  late Rect _levelBounds;
   final Function onSucceed;
   final Function onDeath;
 
@@ -68,14 +69,21 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       position: Vector2(kScreenWidth / 2, kScreenHeight),
       size: Vector2(300, 400),
     ));
+
     //! Mushroom platform hitbox
-    final _platform = PlatformHitbox(
+    _mushroomPlatform = PlatformHitbox(
       type: 'platform',
       anchor: Anchor.bottomCenter,
       size: Vector2(340, 390),
       position: Vector2(kScreenWidth / 2, kScreenHeight),
     );
-    add(_platform);
+    add(_mushroomPlatform);
+    /* add(PlatformHitbox(
+      type: 'platform',
+      anchor: Anchor.bottomCenter,
+      size: Vector2(340, 390),
+      position: Vector2(kScreenWidth / 2, kScreenHeight),
+    )); */
 
     //TODO: BUGFIX this hitbox remains in next level
     //! Player
@@ -91,13 +99,13 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
     );
     add(_player);
     //! Bounce
-    bounce = SpriteComponent(
+    _bounce = SpriteComponent(
       sprite: Sprite(gameRef.bounce),
       anchor: Anchor.topLeft,
       size: Vector2(300, 160),
       position: Vector2(kScreenWidth + 400, kScreenHeight - 560),
     );
-    add(bounce);
+    add(_bounce);
 
     //! Text components
     bounceRateText
@@ -112,29 +120,30 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
   void update(double dt) {
     super.update(dt);
 
-    bounce.x -= bounceSpeed * dt;
+    _bounce.x -= bounceSpeed * dt;
     // Check if bounce has passed left side of screen
-    if (bounce.x < 0 - 400 && isDead == false && hasSucceded == false) {
+    if (_bounce.x < 0 - 400 && isDead == false && hasSucceded == false) {
       bounceSpeed = Random().nextInt(10) * 100 + 500;
-      bounce.x = kScreenWidth;
+      _bounce.x = kScreenWidth;
       hasPassedPlayer = false;
     }
     // Check if bounce has passed player, update bounce rate
-    if (bounce.x - 100 < _player.x &&
-        _player.y < bounce.x + 200 &&
+    if (_bounce.x - 100 < _player.x &&
+        _player.y < _bounce.x + 200 &&
         isDead == false &&
         hasPassedPlayer == false) {
       bounceRate -= 10;
       bounceRateText.text = 'Bounce rate: $bounceRate %';
       hasPassedPlayer = true;
-      if (bounceRate <= 0) {
+      //TODO: Switch back
+      if (bounceRate /* <= */ > 0) {
         handleSuccess();
       }
     }
     // Check if bounce is colliding with hero
-    if (bounce.x < _player.x &&
-        bounce.x + 300 > _player.x &&
-        bounce.y + 20 < _player.y) {
+    if (_bounce.x < _player.x &&
+        _bounce.x + 300 > _player.x &&
+        _bounce.y + 20 < _player.y) {
       //double diff = _player.x - bounce.x;
       _player.x -= (bounceSpeed * dt) / 1;
     }
@@ -189,8 +198,17 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
         milliseconds: 3000,
       ),
       () {
+        //TODO Not use this hack
+        remove(_mushroomPlatform);
         onSucceed();
       },
     );
   }
+
+  /*  @override
+  void onRemove() {
+    // TODO: implement onRemove
+    remove(_mushroomPlatform);
+    super.onRemove();
+  } */
 }

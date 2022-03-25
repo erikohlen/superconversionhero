@@ -108,7 +108,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     final playerImage = gameRef.heroRight;
     _player = Player(
       playerImage,
-      isMovableSideways: false,
+      //TODO Add back in
+      //isMovableSideways: false,
       decrementAttentionSpan: () {},
       incrementPoints: () {},
       /* (int productId) {
@@ -284,6 +285,9 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
           _addedToCart += 1;
           addedToCartText.text = 'Products added to cart: $_addedToCart';
           succeedText.text = 'You added $_addedToCart products to cart!';
+          if (_addedToCart == 1) {
+            succeedText.text = 'You added 1 product to cart!';
+          }
         },
       );
       // Remove product from level

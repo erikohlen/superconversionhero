@@ -100,42 +100,22 @@ class LevelsGame extends FlameGame
             levelName: 'STAY ON SITE',
             next: () {
               loadLevel(StayOnSite(
-                onDeath: _loadLevels,
+                onDeath: () {
+                  // _loadLevels();
+                },
                 onSucceed: () {
-                  loadLevel(LevelBlackIntro(
-                    levelNumber: 2,
-                    levelName: 'FIND PRODUCTS',
-                    next: () {
-                      loadLevel(FindProducts(
-                        onDeath: _loadLevels,
-                        onSucceed: () {
-                          loadLevel(LevelBlackIntro(
-                              levelNumber: 3,
-                              levelName: 'ADD TO CART',
-                              next: () {
-                                loadLevel(
-                                  AddToCart(
-                                      productIds: _productIdsCart,
-                                      onDeath: _loadLevels,
-                                      onSucceed: () {
-                                        loadLevel(LevelBlackIntro(
-                                            levelNumber: 5,
-                                            levelName: 'COMPLETE PURCHASE',
-                                            next: () {
-                                              loadLevel(
-                                                CompletePurchase(
-                                                  onDeath: _loadLevels,
-                                                  onSucceed: () {},
-                                                ),
-                                              );
-                                            }));
-                                      }),
-                                );
-                              }));
-                        },
-                      ));
-                    },
-                  ));
+                  loadLevel(
+                    FindProducts(
+                      onDeath: () {},
+                      onSucceed: () {
+                        loadLevel(AddToCart(
+                          productIds: _productIdsCart,
+                          onDeath: () {},
+                          onSucceed: () {},
+                        ));
+                      },
+                    ),
+                  );
                 },
               ));
             },
@@ -146,12 +126,7 @@ class LevelsGame extends FlameGame
 
     _loadLevels();
 
-    /*   loadLevel(
-      CompletePurchase(
-        onDeath: _loadLevels,
-        onSucceed: () {},
-      ),
-    ); */
+    //loadLevel(FindProducts(onDeath: () {}, onSucceed: () {}));
 
     return super.onLoad();
   }
