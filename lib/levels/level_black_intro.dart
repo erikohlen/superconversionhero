@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
@@ -24,6 +25,9 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
 
   @override
   Future<void>? onLoad() async {
+    if (FlameAudio.bgm.isPlaying == false) {
+      FlameAudio.bgm.play('overworld.mp3');
+    }
     _levelBounds = const Rect.fromLTWH(
       0,
       0,

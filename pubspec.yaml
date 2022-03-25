@@ -32,6 +32,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flame: 1.0.0
+  flame_audio: 1.0.0
   flutter:
     sdk: flutter
 
@@ -47,6 +48,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/audio/
 
   fonts:
     - family: SuperPlumberBrothers

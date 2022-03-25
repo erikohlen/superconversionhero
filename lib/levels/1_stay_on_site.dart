@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
@@ -28,7 +29,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
   final double playerHeight = 140;
 
   // Level state
-  int bounceSpeed = 500;
+  int bounceSpeed = 1000;
   bool isDead = false;
   bool hasSucceded = false;
   int bounceRate = 100;
@@ -94,19 +95,21 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
     _player = Player(
       playerImage,
       decrementAttentionSpan: () {},
-      incrementPoints: () {},
+      incrementPoints: (int productId) {},
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
-      position: Vector2(kScreenWidth / 2, 200),
+      position: Vector2(kScreenWidth / 2, 280),
       size: Vector2(playerWidth, playerHeight),
+      jumpSpeed: 1100,
+      gravity: 29,
     );
     add(_player);
     //! Bounce
     _bounce = SpriteComponent(
       sprite: Sprite(gameRef.bounce),
       anchor: Anchor.topLeft,
-      size: Vector2(300, 160),
-      position: Vector2(kScreenWidth + 400, kScreenHeight - 560),
+      size: Vector2(300, 200),
+      position: Vector2(kScreenWidth + 400, kScreenHeight - 600),
     );
     add(_bounce);
 
@@ -139,7 +142,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       bounceRateText.text = 'Bounce rate: $bounceRate %';
       hasPassedPlayer = true;
       //TODO: Switch back
-      if (bounceRate <= 50) {
+      if (bounceRate <= 0) {
         handleSuccess();
       }
     }
@@ -148,7 +151,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
         _bounce.x + 300 > _player.x &&
         _bounce.y + 20 < _player.y) {
       //double diff = _player.x - bounce.x;
-      _player.x -= (bounceSpeed * dt) / 1;
+      _player.x -= (bounceSpeed * dt) / 1 * 1.5;
     }
 
     if (_player.y > kScreenHeight && isDead == false && !hasSucceded) {
@@ -160,6 +163,9 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
   //! HANDLE DEATH
   void handleDeath() async {
     isDead = true;
+    _mushroomPlatform.collidableType = CollidableType.inactive;
+    FlameAudio.bgm.stop();
+    FlameAudio.play('smb_mariodie.wav');
     Future.delayed(
       const Duration(
         milliseconds: 1000,

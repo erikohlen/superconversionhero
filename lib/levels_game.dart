@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/levels/3_add_to_cart.dart';
 import 'package:superconversionhero/levels/5_complete_purchase.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
@@ -52,6 +53,7 @@ class LevelsGame extends FlameGame
   @override
   Future<void>? onLoad() async {
     super.debugMode = false;
+
     // Device setup
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();

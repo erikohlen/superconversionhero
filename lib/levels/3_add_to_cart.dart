@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/actors/throwable_product.dart';
 import 'package:superconversionhero/constants/constants.dart';
@@ -288,6 +289,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
           if (_addedToCart == 1) {
             succeedText.text = 'You added 1 product to cart!';
           }
+          FlameAudio.play('smb_mariodie.wav');
         },
       );
       // Remove product from level
@@ -375,6 +377,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
   //! HANDLE DEATH
   void handleDeath() async {
     isDead = true;
+    FlameAudio.bgm.stop();
+    //FlameAudio.play('smb_mariodie.wav');
     Future.delayed(
       const Duration(
         milliseconds: 3000,

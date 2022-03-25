@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
@@ -234,6 +235,8 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
   //! HANDLE DEATH
   void handleDeath() async {
     isDead = true;
+    FlameAudio.bgm.stop();
+    FlameAudio.play('smb_mariodie.wav');
     Future.delayed(
       const Duration(
         milliseconds: 3000,

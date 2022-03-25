@@ -13,6 +13,7 @@ void main() {
           ),
         ),
       ), */
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Focus(
           onKey: (FocusNode node, RawKeyEvent event) => KeyEventResult.handled,

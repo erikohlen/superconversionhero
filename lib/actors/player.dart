@@ -29,7 +29,7 @@ class Player extends SpriteComponent
 
   // Callbacks to levels
   final Function decrementAttentionSpan;
-  final Function incrementPoints;
+  final void Function(int) incrementPoints;
   bool isMovableSideways;
 
   Player(
