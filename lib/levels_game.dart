@@ -5,6 +5,7 @@ import 'package:flame/input.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/levels/3_add_to_cart.dart';
 import 'package:superconversionhero/levels/5_complete_purchase.dart';
+import 'package:superconversionhero/levels/go_down_funnel.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
 import 'package:superconversionhero/levels/1_stay_on_site.dart';
 
@@ -49,6 +50,7 @@ class LevelsGame extends FlameGame
   late Image triangle;
   late Image castleBg;
   late Image player2;
+  late Image pipe;
 
   @override
   Future<void>? onLoad() async {
@@ -89,6 +91,7 @@ class LevelsGame extends FlameGame
     triangle = await images.load('triangle.png');
     castleBg = await images.load('castle_bg.png');
     player2 = await images.load('player2.png');
+    pipe = await images.load('pipe.png');
 
     // Game state
     List<int> _productIdsCart = [1];
@@ -156,10 +159,15 @@ class LevelsGame extends FlameGame
       ));
     }
 
-    _loadLevels();
+    //_loadLevels();
 
-    /* loadLevel(AddToCart(
-        productIds: _productIdsCart, onDeath: () {}, onSucceed: () {})); */
+    loadLevel(
+      GoDownFunnel(
+        levelNumber: 1,
+        levelName: '',
+        next: () {},
+      ),
+    );
 
     return super.onLoad();
   }

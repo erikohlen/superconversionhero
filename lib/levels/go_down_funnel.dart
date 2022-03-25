@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flame/extensions.dart';
 import '../actors/player.dart';
 
-class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
+class GoDownFunnel extends Component with HasGameRef<LevelsGame> {
   final int levelNumber;
   final String levelName;
   final Function next;
@@ -17,7 +17,7 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
   late SpriteComponent _background;
   late SpriteComponent _superConversionHero;
 
-  LevelBlackIntro({
+  GoDownFunnel({
     required this.levelNumber,
     required this.levelName,
     required this.next,
@@ -25,9 +25,6 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
 
   @override
   Future<void>? onLoad() async {
-    if (FlameAudio.bgm.isPlaying == false) {
-      FlameAudio.bgm.play('overworld.mp3');
-    }
     _levelBounds = const Rect.fromLTWH(
       0,
       0,
@@ -39,9 +36,9 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
 
     Future.delayed(
         Duration(
-          seconds: 3,
+          seconds: 5,
         ), () {
-      next();
+      //next();
     });
 
     return super.onLoad();
@@ -56,17 +53,37 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
     add(_background);
 
     add(TextComponent(
-      text: 'World $levelNumber-1',
+      text: 'You have progressed to\nthe next step in the funnel!',
       textRenderer: kBiggerText,
       anchor: Anchor.center,
-      position: Vector2(kScreenWidth / 2, kScreenHeight / 2 - 80),
+      position: Vector2(kScreenWidth / 2, kScreenHeight / 2 - 200),
     ));
-    add(TextComponent(
-      text: levelName,
-      textRenderer: kBiggerText,
-      anchor: Anchor.center,
-      position: Vector2(kScreenWidth / 2, kScreenHeight / 2 + 80),
-    ));
+
+    // Pipe
+    add(
+      SpriteComponent(
+        sprite: Sprite(
+          gameRef.pipe,
+        ),
+        anchor: Anchor.bottomCenter,
+        position: Vector2(kScreenWidth / 2, kScreenHeight - 136),
+        //size: Vector2(300, 400),
+        scale: Vector2(0.4, 0.4),
+        priority: 100,
+      ),
+    );
+    add(
+      SpriteComponent(
+        sprite: Sprite(
+          gameRef.heroRight,
+        ),
+        anchor: Anchor.bottomCenter,
+        position: Vector2(kScreenWidth / 2 - 20, kScreenHeight - 300),
+        scale: Vector2(1.5, 1.5),
+        //size: Vector2(300, 400),
+        //  scale: Vector2(0.5, 0.5),
+      ),
+    );
   }
 
   @override
