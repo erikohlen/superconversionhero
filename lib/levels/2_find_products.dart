@@ -47,7 +47,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
   final relevantProductsText =
       TextComponent(text: 'Relevant products found: 0', textRenderer: kRegular);
   final diedText = TextComponent(
-      text: 'You got choice paralysis!', textRenderer: kBiggerText);
+      text: "You've got choice paralysis!", textRenderer: kBiggerText);
   final succeedText =
       TextComponent(text: 'You found products!', textRenderer: kBiggerText);
 
@@ -82,6 +82,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     ));
 
     //! Ground platform hitbox
+
     add(PlatformHitbox(
       type: 'platform',
       anchor: Anchor.bottomLeft,
@@ -113,6 +114,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
             succeedText.text = 'You found $_relevantFound product! ';
           }
         }
+        FlameAudio.play('smb_coin.wav');
       },
       anchor: Anchor.bottomCenter,
       levelBounds: _levelBounds,
@@ -121,6 +123,8 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
         playerWidth,
         playerHeight,
       ),
+      jumpSpeed: 400,
+      moveSpeed: 600,
     );
     add(_player);
 
@@ -148,7 +152,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
       //TODO: Implement real product info
       // Random int between 0 and 14 to randomize what productpage.
-      final _productIndex = Random().nextInt(13) + 1;
+      final _productIndex = Random().nextInt(33) + 1;
       Image _productImage;
 
       switch (_productIndex) {
@@ -194,6 +198,66 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
         case 14:
           _productImage = gameRef.product14;
           break;
+        case 15:
+          _productImage = gameRef.product5;
+          break;
+        case 16:
+          _productImage = gameRef.product6;
+          break;
+        case 17:
+          _productImage = gameRef.product7;
+          break;
+        case 18:
+          _productImage = gameRef.product8;
+          break;
+        case 19:
+          _productImage = gameRef.product9;
+          break;
+        case 20:
+          _productImage = gameRef.product10;
+          break;
+        case 21:
+          _productImage = gameRef.product11;
+          break;
+        case 22:
+          _productImage = gameRef.product12;
+          break;
+        case 23:
+          _productImage = gameRef.product13;
+          break;
+        case 24:
+          _productImage = gameRef.product14;
+          break;
+        case 25:
+          _productImage = gameRef.product5;
+          break;
+        case 26:
+          _productImage = gameRef.product6;
+          break;
+        case 27:
+          _productImage = gameRef.product7;
+          break;
+        case 28:
+          _productImage = gameRef.product8;
+          break;
+        case 29:
+          _productImage = gameRef.product9;
+          break;
+        case 30:
+          _productImage = gameRef.product10;
+          break;
+        case 31:
+          _productImage = gameRef.product11;
+          break;
+        case 32:
+          _productImage = gameRef.product12;
+          break;
+        case 33:
+          _productImage = gameRef.product13;
+          break;
+        case 34:
+          _productImage = gameRef.product14;
+          break;
         default:
           _productImage = gameRef.product11; // of course goomba is default :)
       }
@@ -213,8 +277,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
           ),
         ),
       );
-
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(milliseconds: 500), () {
         timeToLoadProduct = true;
       });
     }
@@ -237,6 +300,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
     isDead = true;
     FlameAudio.bgm.stop();
     FlameAudio.play('smb_mariodie.wav');
+    _player.collidableType = CollidableType.inactive;
     Future.delayed(
       const Duration(
         milliseconds: 3000,
@@ -277,7 +341,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
             milliseconds: 5000,
           ),
           () {
-            onSucceed();
+            onSucceed(_relevantFoundIds);
           },
         );
       },

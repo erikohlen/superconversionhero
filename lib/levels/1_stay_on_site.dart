@@ -101,7 +101,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       position: Vector2(kScreenWidth / 2, 280),
       size: Vector2(playerWidth, playerHeight),
       jumpSpeed: 1100,
-      gravity: 29,
+      gravity: 28,
     );
     add(_player);
     //! Bounce

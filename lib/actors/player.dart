@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 import 'package:flutter/services.dart';
 import 'package:superconversionhero/actors/platform.dart';
@@ -113,6 +114,7 @@ class Player extends SpriteComponent
     super.update(dt);
   }
 
+  bool _isPlayingJump = false;
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     _hAxisInput = 0;
@@ -123,6 +125,12 @@ class Player extends SpriteComponent
           keysPressed.contains(LogicalKeyboardKey.arrowRight) ? 1 : 0;
     }
     _jumpInput = keysPressed.contains(LogicalKeyboardKey.space);
+    if (_isOnGround && keysPressed.contains(LogicalKeyboardKey.space)) {
+      FlameAudio.play('jump.mp3');
+      /*  Future.delayed(Duration(seconds: 2), () {
+        _isPlayingJump = false;
+      }); */
+    }
 
     return true;
   }
@@ -154,7 +162,9 @@ class Player extends SpriteComponent
 
     if (other is ProductPage) {
       print('Collided with product page');
-      decrementAttentionSpan();
+      if (other.isRelevantProduct == false) {
+        decrementAttentionSpan();
+      }
       if (other.hasBeenViewed == false) {
         //TODO: Add to viewed counter
 

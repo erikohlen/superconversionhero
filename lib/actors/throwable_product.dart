@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/platform.dart';
 
 import 'player.dart';
@@ -122,6 +123,7 @@ class ThrowableProduct extends SpriteComponent
       if (other.type == 'basketbottom' && !_hasAddedToCart) {
         addToCart(productId);
         _hasAddedToCart = true;
+        FlameAudio.play('smb_coin.wav');
       }
 
       if (intersectionPoints.length == 2) {

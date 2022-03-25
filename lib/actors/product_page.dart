@@ -6,7 +6,7 @@ import 'package:flame/input.dart';
 // Represents a player in the game world.
 class ProductPage extends SpriteComponent
     with HasHitboxes, Collidable, KeyboardHandler {
-  final double _gravity = 5;
+  final double _gravity = 10;
   final Vector2 _up = Vector2(0, -1);
   final Vector2 _velocity = Vector2.zero();
 

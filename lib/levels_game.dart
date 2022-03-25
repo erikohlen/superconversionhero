@@ -115,7 +115,8 @@ class LevelsGame extends FlameGame
                             onDeath: () {
                               _loadLevels();
                             },
-                            onSucceed: () {
+                            onSucceed: (List<int> productIds) {
+                              _productIdsCart = productIds;
                               loadLevel(LevelBlackIntro(
                                   levelNumber: 3,
                                   levelName: 'ADD TO CART',
@@ -157,7 +158,8 @@ class LevelsGame extends FlameGame
 
     _loadLevels();
 
-    //loadLevel(FindProducts(onDeath: () {}, onSucceed: () {}));
+    loadLevel(AddToCart(
+        productIds: _productIdsCart, onDeath: () {}, onSucceed: () {}));
 
     return super.onLoad();
   }

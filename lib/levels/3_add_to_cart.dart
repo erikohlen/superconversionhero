@@ -20,6 +20,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
 
   late Rect _levelBounds;
   late SpriteComponent _background;
+  late PlatformHitbox _platform;
   final Function onDeath;
   final Function onSucceed;
   final List<int> productIds;
@@ -49,7 +50,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
       TextComponent(text: 'Products added to cart: 0', textRenderer: kRegular);
 
   final diedText = TextComponent(
-      text: 'You added 0 products to cart!', textRenderer: kBiggerText);
+      text: 'You had Fears, Uncertainties\nand Doubts!',
+      textRenderer: kBiggerText);
   final succeedText = TextComponent(
       text: 'You added products to cart!', textRenderer: kBiggerText);
   late SpriteComponent _basket;
@@ -97,7 +99,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     ));
 
     //! Ground platform hitbox
-    final _platform = PlatformHitbox(
+    _platform = PlatformHitbox(
       type: 'platform',
       anchor: Anchor.bottomLeft,
       size: Vector2(kScreenWidth, 132),
@@ -289,7 +291,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
           if (_addedToCart == 1) {
             succeedText.text = 'You added 1 product to cart!';
           }
-          FlameAudio.play('smb_mariodie.wav');
+          //FlameAudio.play('smb_mariodie.wav');
         },
       );
       // Remove product from level
@@ -352,7 +354,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     if (_isMeterShowing) {
       _triangle.y -= _triangleSpeed;
       _throwStrength =
-          7 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
+          //7 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
+          20 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
 
       if (_triangle.y <= (kScreenHeight / 2) - 140) {
         _triangleSpeed = -15;
@@ -363,10 +366,12 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     }
     // Handle end of level
     if (!_isProductLoaded && productsToThrow.length == 0) {
-      if (_addedToCart == 0) {
+      if (_addedToCart == 0 && !isDead) {
+        isDead = true;
         handleDeath();
       }
       if (_addedToCart > 0) {
+        hasSucceded = true;
         handleSuccess();
       }
     }
@@ -376,14 +381,15 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
 
   //! HANDLE DEATH
   void handleDeath() async {
-    isDead = true;
-    FlameAudio.bgm.stop();
-    //FlameAudio.play('smb_mariodie.wav');
     Future.delayed(
       const Duration(
         milliseconds: 3000,
       ),
       () {
+        FlameAudio.bgm.stop();
+        FlameAudio.play('smb_mariodie.wav');
+        _player.collidableType = CollidableType.inactive;
+        _platform.collidableType = CollidableType.inactive;
         add(diedText);
         // TODO: Move into first definition
         diedText.anchor = Anchor.topCenter;
@@ -392,7 +398,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
 
         Future.delayed(
           const Duration(
-            milliseconds: 5000,
+            milliseconds: 3000,
           ),
           () {
             onDeath();
@@ -407,16 +413,18 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     hasSucceded = true;
     Future.delayed(
       const Duration(
-        milliseconds: 3000,
+        milliseconds: 1,
       ),
       () {
         add(succeedText);
         succeedText.anchor = Anchor.topCenter;
         succeedText.x = kScreenWidth / 2;
         succeedText.y = kScreenHeight / 2;
+        FlameAudio.bgm.stop();
+        FlameAudio.play('win.mp3');
         Future.delayed(
           const Duration(
-            milliseconds: 5000,
+            milliseconds: 300,
           ),
           () {
             onSucceed();

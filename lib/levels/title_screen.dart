@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:superconversionhero/actors/background.dart';
 import 'package:superconversionhero/constants/constants.dart';
 import 'package:superconversionhero/levels_game.dart';
@@ -21,6 +22,7 @@ class LevelTitleScreen extends Component
 
   @override
   Future<void>? onLoad() async {
+    FlameAudio.bgm.stop();
     _levelBounds = const Rect.fromLTWH(
       0,
       0,

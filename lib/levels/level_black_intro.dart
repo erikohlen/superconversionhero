@@ -74,7 +74,6 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
       //TODO: Go to level 1 stay on site
 
     }
-
     return true;
   }
 }
