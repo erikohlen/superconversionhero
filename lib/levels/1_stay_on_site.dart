@@ -61,23 +61,26 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
     _background.size = Vector2(kScreenWidth, kScreenHeight);
     add(_background);
     //! Mushroom
-    add(SpriteComponent(
-      sprite: Sprite(
-        gameRef.gigantMushroom,
+    add(
+      SpriteComponent(
+        sprite: Sprite(
+          gameRef.gigantMushroom,
+        ),
+        anchor: Anchor.bottomCenter,
+        position: Vector2(kScreenWidth / 2, kScreenHeight),
+        size: Vector2(300, 400),
       ),
-      anchor: Anchor.bottomCenter,
-      position: Vector2(kScreenWidth / 2, kScreenHeight),
-      size: Vector2(300, 400),
-    ));
+    );
 
     //! Mushroom platform hitbox
     _mushroomPlatform = PlatformHitbox(
-      type: 'platform',
+      type: 'mushroom',
       anchor: Anchor.bottomCenter,
       size: Vector2(340, 390),
       position: Vector2(kScreenWidth / 2, kScreenHeight),
     );
     add(_mushroomPlatform);
+
     /* add(PlatformHitbox(
       type: 'platform',
       anchor: Anchor.bottomCenter,
@@ -136,7 +139,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       bounceRateText.text = 'Bounce rate: $bounceRate %';
       hasPassedPlayer = true;
       //TODO: Switch back
-      if (bounceRate /* <= */ > 0) {
+      if (bounceRate <= 50) {
         handleSuccess();
       }
     }
@@ -148,7 +151,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       _player.x -= (bounceSpeed * dt) / 1;
     }
 
-    if (_player.y > kScreenHeight && isDead == false) {
+    if (_player.y > kScreenHeight && isDead == false && !hasSucceded) {
       handleDeath();
     }
     if (isDead == true) {}
@@ -181,6 +184,11 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
   //! HANDLE SUCCEED
   void handleSuccess() async {
     hasSucceded = true;
+    _mushroomPlatform.collidableType = CollidableType.inactive;
+    remove(_player);
+    add(_player);
+    _player.freeze;
+
     Future.delayed(
       const Duration(
         milliseconds: 1000,
@@ -198,8 +206,6 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
         milliseconds: 3000,
       ),
       () {
-        //TODO Not use this hack
-        remove(_mushroomPlatform);
         onSucceed();
       },
     );

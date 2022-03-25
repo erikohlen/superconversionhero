@@ -58,7 +58,7 @@ class LevelTitleScreen extends Component
     ));
     add(TextComponent(
       text: 'Press "Space" to start',
-      textRenderer: kRegular,
+      textRenderer: kBiggerText,
       anchor: Anchor.topCenter,
       position: Vector2(kScreenWidth / 2, 540),
     ));

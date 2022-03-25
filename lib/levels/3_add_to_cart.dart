@@ -109,9 +109,9 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
     _player = Player(
       playerImage,
       //TODO Add back in
-      //isMovableSideways: false,
+      isMovableSideways: false,
       decrementAttentionSpan: () {},
-      incrementPoints: () {},
+      incrementPoints: (int productId) {},
       /* (int productId) {
         if (!isDead && !hasSucceded) {
           _addedToCart += 1;

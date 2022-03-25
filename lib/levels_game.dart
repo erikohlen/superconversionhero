@@ -51,7 +51,7 @@ class LevelsGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
-    super.debugMode = true;
+    super.debugMode = false;
     // Device setup
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();
@@ -101,21 +101,50 @@ class LevelsGame extends FlameGame
             next: () {
               loadLevel(StayOnSite(
                 onDeath: () {
-                  // _loadLevels();
+                  _loadLevels();
                 },
                 onSucceed: () {
-                  loadLevel(
-                    FindProducts(
-                      onDeath: () {},
-                      onSucceed: () {
-                        loadLevel(AddToCart(
-                          productIds: _productIdsCart,
-                          onDeath: () {},
-                          onSucceed: () {},
-                        ));
-                      },
-                    ),
-                  );
+                  loadLevel(LevelBlackIntro(
+                      levelNumber: 2,
+                      levelName: 'FIND PRODUCTS',
+                      next: () {
+                        loadLevel(
+                          FindProducts(
+                            onDeath: () {
+                              _loadLevels();
+                            },
+                            onSucceed: () {
+                              loadLevel(LevelBlackIntro(
+                                  levelNumber: 3,
+                                  levelName: 'ADD TO CART',
+                                  next: () {
+                                    loadLevel(AddToCart(
+                                      productIds: _productIdsCart,
+                                      onDeath: () {
+                                        _loadLevels();
+                                      },
+                                      onSucceed: () {
+                                        _loadLevels();
+                                        /* loadLevel(
+                                          LevelBlackIntro(
+                                            levelNumber: 5,
+                                            levelName: 'COMPLETE PURCHASE',
+                                            next: () {
+                                              loadLevel(CompletePurchase(
+                                                  onDeath: () {
+                                                    _loadLevels();
+                                                  },
+                                                  onSucceed: () {}));
+                                            },
+                                          ),
+                                        ); */
+                                      },
+                                    ));
+                                  }));
+                            },
+                          ),
+                        );
+                      }));
                 },
               ));
             },
@@ -134,6 +163,7 @@ class LevelsGame extends FlameGame
   // Swaps current level with given level
   void loadLevel(Component levelToLoad) {
     _currentLevel?.removeFromParent();
+
     _currentLevel = levelToLoad;
     add(_currentLevel!);
   }

@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 // Represents a platform in the game world.
 class PlatformHitbox extends PositionComponent with HasHitboxes, Collidable {
   final String type;
+  late HitboxRectangle hitBox;
   PlatformHitbox({
     required Vector2 position,
     required Vector2 size,
@@ -25,7 +26,9 @@ class PlatformHitbox extends PositionComponent with HasHitboxes, Collidable {
     // Passive cause we don't want platforms to
     // collide with each other.
     collidableType = CollidableType.passive;
-    addHitbox(HitboxRectangle());
+    hitBox = HitboxRectangle();
+
+    addHitbox(hitBox);
     return super.onLoad();
   }
 }

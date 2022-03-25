@@ -13,8 +13,9 @@ class Player extends SpriteComponent
   int _hAxisInput = 0;
   bool _jumpInput = false;
   bool _isOnGround = false;
+  bool freeze = false;
 
-  final double _gravity = 30;
+  double gravity; //30;
   double jumpSpeed; // = 800;
   final double _fallDown = 800;
   double moveSpeed; // = 400;
@@ -38,6 +39,7 @@ class Player extends SpriteComponent
     required this.incrementPoints,
     this.jumpSpeed = 800,
     this.moveSpeed = 400,
+    this.gravity = 30,
     this.isMovableSideways = true,
     Vector2? position,
     Vector2? size,
@@ -73,10 +75,13 @@ class Player extends SpriteComponent
 
   @override
   void update(double dt) {
+    if (freeze) {
+      return;
+    }
     // Modify components of velocity based on
     // inputs and gravity.
     _velocity.x = _hAxisInput * moveSpeed;
-    _velocity.y += _gravity;
+    _velocity.y += gravity;
 
     // Allow jump only if jump input is pressed
     // and player is already on ground.
@@ -156,7 +161,9 @@ class Player extends SpriteComponent
         //TODO: Add to
         if (other.isRelevantProduct == true) {
           print('Is relevant product!');
-          incrementPoints(other.productId);
+          if (other.productId != null) {
+            incrementPoints(other.productId);
+          }
         }
         other.hasBeenViewed = true;
       }
