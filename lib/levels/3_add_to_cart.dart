@@ -54,6 +54,9 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
       textRenderer: kBiggerText);
   final succeedText = TextComponent(
       text: 'You added products to cart!', textRenderer: kBiggerText);
+  final endOfDemo = TextComponent(
+      text: 'This is the end of the Demo\nof the game. Good bye!',
+      textRenderer: kBiggerText);
   late SpriteComponent _basket;
   late SpriteComponent _meter;
   late SpriteComponent _triangle;
@@ -228,10 +231,10 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
       PlatformHitbox(
         type: 'basketbottom',
         anchor: Anchor.topLeft,
-        size: Vector2(100, 40),
+        size: Vector2(40, 40),
         position: Vector2(
-          kScreenWidth - 180,
-          260,
+          kScreenWidth - 120,
+          220,
         ),
         priority: 300,
       ),
@@ -321,6 +324,8 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
       if (_isMeterShowing) {
         print('Thrown with strength: $_throwStrength');
         _productToThrow?.getThrown(throwStrength: _throwStrength);
+
+        FlameAudio.play('cannon.mp3');
         remove(_meter);
         remove(_triangle);
         _isMeterShowing = false;
@@ -370,7 +375,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
         isDead = true;
         handleDeath();
       }
-      if (_addedToCart > 0) {
+      if (_addedToCart > 0 && !hasSucceded) {
         hasSucceded = true;
         handleSuccess();
       }
@@ -410,24 +415,32 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
 
   //! HANDLE SUCCEED
   void handleSuccess() async {
-    hasSucceded = true;
+    add(succeedText);
+    succeedText.anchor = Anchor.topCenter;
+    succeedText.x = kScreenWidth / 2;
+    succeedText.y = kScreenHeight / 2 - 100;
     Future.delayed(
       const Duration(
-        milliseconds: 1,
+        milliseconds: 2000,
       ),
       () {
-        add(succeedText);
-        succeedText.anchor = Anchor.topCenter;
-        succeedText.x = kScreenWidth / 2;
-        succeedText.y = kScreenHeight / 2;
         FlameAudio.bgm.stop();
-        FlameAudio.play('win.mp3');
         Future.delayed(
           const Duration(
-            milliseconds: 300,
+            milliseconds: 1000,
           ),
           () {
-            onSucceed();
+            //FlameAudio.bgm.stop();
+            FlameAudio.bgm.play('win.mp3');
+            add(endOfDemo);
+            endOfDemo.anchor = Anchor.topCenter;
+            endOfDemo.x = kScreenWidth / 2;
+            endOfDemo.y = kScreenHeight / 2 + 30;
+            Future.delayed(
+                Duration(
+                  seconds: 1,
+                ),
+                () {});
           },
         );
       },

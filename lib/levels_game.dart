@@ -52,7 +52,7 @@ class LevelsGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
-    super.debugMode = false;
+    //super.debugMode = true;
 
     // Device setup
     await Flame.device.fullScreen();
@@ -158,8 +158,8 @@ class LevelsGame extends FlameGame
 
     _loadLevels();
 
-    loadLevel(AddToCart(
-        productIds: _productIdsCart, onDeath: () {}, onSucceed: () {}));
+    /* loadLevel(AddToCart(
+        productIds: _productIdsCart, onDeath: () {}, onSucceed: () {})); */
 
     return super.onLoad();
   }

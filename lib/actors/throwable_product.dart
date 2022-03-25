@@ -109,7 +109,11 @@ class ThrowableProduct extends SpriteComponent
     super.update(dt);
   }
 
+  bool _isInAir = false;
   void getThrown({required double throwStrength}) {
+    if (!_isInAir) {
+      _isInAir = true;
+    }
     print('Product thrown!');
     // 1 - 10
     _hAxisInput = (throwStrength + 30) / 10; // correct is 37 / 10

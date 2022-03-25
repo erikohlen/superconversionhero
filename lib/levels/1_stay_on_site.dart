@@ -82,13 +82,6 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
     );
     add(_mushroomPlatform);
 
-    /* add(PlatformHitbox(
-      type: 'platform',
-      anchor: Anchor.bottomCenter,
-      size: Vector2(340, 390),
-      position: Vector2(kScreenWidth / 2, kScreenHeight),
-    )); */
-
     //TODO: BUGFIX this hitbox remains in next level
     //! Player
     final playerImage = gameRef.heroRight;
@@ -101,7 +94,7 @@ class StayOnSite extends Component with HasGameRef<LevelsGame> {
       position: Vector2(kScreenWidth / 2, 280),
       size: Vector2(playerWidth, playerHeight),
       jumpSpeed: 1100,
-      gravity: 28,
+      gravity: 29,
     );
     add(_player);
     //! Bounce
