@@ -8,6 +8,7 @@ import 'package:superconversionhero/levels/5_complete_purchase.dart';
 import 'package:superconversionhero/levels/go_down_funnel.dart';
 import 'package:superconversionhero/levels/level_black_intro.dart';
 import 'package:superconversionhero/levels/1_stay_on_site.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'constants/constants.dart';
 import 'levels/2_find_products.dart';
@@ -168,11 +169,24 @@ class LevelsGame extends FlameGame
     return super.onLoad();
   }
 
+  void sendAnalyticsEvent(
+      String eventName, Map<String, dynamic> eventParams) async {
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+    await analytics.logEvent(
+      name: eventName,
+      parameters: eventParams,
+    );
+  }
+
   // Swaps current level with given level
   void loadLevel(Component levelToLoad) {
     _currentLevel?.removeFromParent();
 
     _currentLevel = levelToLoad;
     add(_currentLevel!);
+    print(_currentLevel.toString());
+    sendAnalyticsEvent(
+        'loadLevel', {'levelName': _currentLevel.runtimeType.toString()});
   }
 }
