@@ -159,15 +159,11 @@ class LevelsGame extends FlameGame
       ));
     }
 
-    //_loadLevels();
+    _loadLevels();
 
-    loadLevel(
-      GoDownFunnel(
-        levelNumber: 1,
-        levelName: '',
-        next: () {},
-      ),
-    );
+    /* loadLevel(
+      AddToCart(onDeath: () {}, onSucceed: () {}, productIds: [1, 2, 3, 4, 2]),
+    ); */
 
     return super.onLoad();
   }

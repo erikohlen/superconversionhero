@@ -51,9 +51,9 @@ class LevelBlackIntro extends Component with HasGameRef<LevelsGame> {
   // all the actors in the game world.
   void _spawnActors() {
     //! Background
-    _background = Background(gameRef.overworldBg);
+    /* _background = Background(gameRef.overworldBg);
     _background.size = Vector2(kScreenWidth, kScreenHeight);
-    add(_background);
+    add(_background); */
 
     add(TextComponent(
       text: 'World $levelNumber-1',

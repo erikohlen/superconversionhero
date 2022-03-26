@@ -152,7 +152,7 @@ class FindProducts extends Component with HasGameRef<LevelsGame> {
       final _x = Random().nextInt(kScreenWidth.toInt()).toDouble();
       //TODO: Implement real product info
       // Random int between 0 and 14 to randomize what productpage.
-      final _productIndex = Random().nextInt(33) + 1;
+      final _productIndex = Random().nextInt(24) + 1;
       Image _productImage;
 
       switch (_productIndex) {

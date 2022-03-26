@@ -59,10 +59,16 @@ class LevelTitleScreen extends Component
       ),
     ));
     add(TextComponent(
-      text: 'Press "Space" to start',
-      textRenderer: kBiggerText,
+      text: 'Left/Right-arrows to move, Space to jump',
+      textRenderer: kRegular,
       anchor: Anchor.topCenter,
-      position: Vector2(kScreenWidth / 2, 540),
+      position: Vector2(kScreenWidth / 2, 500),
+    ));
+    add(TextComponent(
+      text: 'Press Space to start',
+      textRenderer: kRegular,
+      anchor: Anchor.topCenter,
+      position: Vector2(kScreenWidth / 2, 550),
     ));
   }
 

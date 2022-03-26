@@ -360,7 +360,7 @@ class AddToCart extends Component with HasGameRef<LevelsGame>, KeyboardHandler {
       _triangle.y -= _triangleSpeed;
       _throwStrength =
           //7 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
-          20 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
+          30 + (5 * ((kScreenHeight / 2) - _triangle.y) / 140); //TODO
 
       if (_triangle.y <= (kScreenHeight / 2) - 140) {
         _triangleSpeed = -15;
